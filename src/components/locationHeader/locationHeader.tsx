@@ -406,6 +406,7 @@ import Geocoder from 'react-native-geocoder-reborn';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Colors from '../../constants/Colors';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useNavigation } from '@react-navigation/native';
 
 const dummyAddresses = [
   {
@@ -448,7 +449,7 @@ const LocationHeader = ({ loading = false }) => {
   });
   const [pincode, setPincode] = useState('');
   const [showAllAddresses, setShowAllAddresses] = useState(false);
-
+const navigation =useNavigation();
   // Request location permission safely
   const requestLocationPermission = async () => {
     try {
@@ -538,15 +539,15 @@ const LocationHeader = ({ loading = false }) => {
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: 12,
-            paddingVertical: 8,
+            paddingVertical: 10,
             marginBottom: 15,
           }}
         >
-          <View style={{ width: 18, height: 18, borderRadius: 9 }} />
+          <View style={{ width: 18, height: 25, borderRadius: 9 }} />
           <View
             style={{
               flex: 1,
-              height: 16,
+              height: 25,
               borderRadius: 4,
               marginLeft: 6,
             }}
@@ -558,16 +559,7 @@ const LocationHeader = ({ loading = false }) => {
 
   return (
     <>
-      <Text
-        style={{
-          paddingHorizontal: 15,
-          fontSize: 14,
-          fontWeight: '500',
-          color: Colors.light_gray,
-        }}
-      >
-        Location
-      </Text>
+     
 
       {/* Header Row */}
       <View style={styles.headerRow}>
@@ -598,7 +590,7 @@ const LocationHeader = ({ loading = false }) => {
         {/* Notification Icon */}
         <TouchableOpacity
           style={styles.notificationBtn}
-          onPress={() => Alert.alert('Notifications', 'Open notifications here')}
+          onPress={() => navigation.navigate('NotificationsScreen')}
           activeOpacity={0.7}
         >
           <Icon name="bell" size={22} color={'#4B5563'} />
@@ -729,7 +721,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // space between location & notification
     paddingHorizontal: 12,
     paddingVertical: 6,
-    marginBottom: 15,
+   // marginBottom: 15,
   },
   headerLeft: {
     flexDirection: 'row',

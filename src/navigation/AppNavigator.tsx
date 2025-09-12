@@ -89,37 +89,44 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { authRoutes, mainRoutes, AuthStackParamList, MainTabParamList } from './Routes';
 import AppHeader from '../components/AppHeader';
 import SplashScreen from '../screens/SplashScreen';
+import Colors from '../constants/Colors';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function MainTabs() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => {
-        const current = mainRoutes.find(r => r.name === route.name);
-        return {
-          header: (props: any) => (
-            <AppHeader 
-              {...props} 
-              title={current?.options?.title ?? current?.name} 
-            />
-          ),
-          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <Icon name={current?.icon ?? 'circle'} size={size} color={color} />
-          ),
-        };
-      }}
-    >
-      {mainRoutes.map(route => (
-        <Tab.Screen 
-          key={route.name} 
-          name={route.name as any} 
-          component={route.component} 
-          options={route.options} 
+   <Tab.Navigator
+  screenOptions={({ route }) => {
+    const current = mainRoutes.find(r => r.name === route.name);
+    return {
+      header: (props: any) => <AppHeader {...props} title={current?.options?.title ?? current?.name} />,
+      tabBarIcon: ({ color, size, focused }) => (
+        <Icon 
+          name={current?.icon ?? 'circle'} 
+          size={30} 
+          // Use React Navigation color for active/inactive
+          color={focused ? Colors.darkBlueP1 : '#999'} 
         />
-      ))}
-    </Tab.Navigator>
+      ),
+     
+          
+          tabBarStyle: { height: 64, paddingBottom: 10,borderTopRightRadius:20,borderTopLeftRadius:20 },
+          tabBarLabelStyle: { paddingBottom: 10, fontSize: 12},
+          headerShown: true,
+          headerStyle: { backgroundColor: Colors.darkBlueP1 },
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center',
+      tabBarActiveTintColor: Colors.darkBlueP1,
+      tabBarInactiveTintColor: '#999',
+    };
+  }}
+>
+  {mainRoutes.map(route => (
+    <Tab.Screen key={route.name} name={route.name as any} component={route.component} options={route.options} />
+  ))}
+</Tab.Navigator>
+
   );
 }
 

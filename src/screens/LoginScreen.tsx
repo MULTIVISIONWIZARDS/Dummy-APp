@@ -362,7 +362,7 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -380,8 +380,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Toast from 'react-native-toast-message';
+import { loginUser, signupUser } from '../store/authSlice';
+import { useDispatch } from 'react-redux';
 const AuthScreen = ({ navigation }) => {
+  const dispatch=useDispatch();
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
 
@@ -398,24 +401,110 @@ const AuthScreen = ({ navigation }) => {
     },
   });
 
+  //   useEffect(() => {
+  //   const checkLogin = async () => {
+  //     const userId = await AsyncStorage.getItem('userId');
+  //     const subscribed = await AsyncStorage.getItem(`subscription_${userId}`);
+  //     if (userId && subscribed === 'true') {
+  //       navigation.replace('Main');
+  //     } else if (userId) {
+  //       navigation.replace('Subscription', { userId });
+  //     }
+  //   };
+  //   checkLogin();
+  // }, []);
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       if (isSignUp) {
-        Alert.alert('Success', 'Account created successfully!');
+        const result = await dispatch(signupUser(data));
+        if (signupUser.fulfilled.match(result)) {
+          const user = result.payload;
+          await AsyncStorage.setItem('userId', user.id);
+          await AsyncStorage.setItem('isLoggedIn', 'true');
+          Toast.show({ type: 'success', text1: 'Account created successfully!' });
+          navigation.replace('Subscription', { userId: user.id });
+        } else {
+          Toast.show({ type: 'error', text1: result.payload || 'Signup failed' });
+        }
       } else {
-        Alert.alert('Welcome Back!', 'Signed in successfully!');
+        const result = await dispatch(loginUser({ email: data.email, password: data.password }));
+        if (loginUser.fulfilled.match(result)) {
+          const user = result.payload;
+          await AsyncStorage.setItem('userId', user.id);
+          await AsyncStorage.setItem('isLoggedIn', 'true');
+
+          const subscribed = await AsyncStorage.getItem(`subscription_${user.id}`);
+         // Toast.show({ type: 'success', text1: 'Signed in successfully!',position:"bottom" });
+          if (subscribed === 'true') {
+            navigation.replace('Main');
+          } else {
+            navigation.replace('Subscription', { userId: user.id });
+          }
+        } else {
+          //Toast.show({ type: 'error', text1: result.payload || 'Login failed',position:"bottom" });
+        }
       }
-      navigation.replace('Main');
-      await AsyncStorage.setItem('isLoggedIn', 'true');
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      Toast.show({ type: 'error', text1: 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
+  // const onSubmit = async (data) => {
+  //   console.log("::::::::::::::::::data::::::::::::",data);
+    
+  //   setLoading(true);
+  //   try {
+  //     await new Promise(resolve => setTimeout(resolve, 1500));
+
+  //     // if (isSignUp) {
+  //     //  // Alert.alert('Success', '');
+  //     //   Toast.show({
+  //     //     type:"success",
+  //     //     text1:"Account created successfully!"
+  //     //   })
+  //     // } else {
+  //     //  // Alert.alert('Welcome Back!', '');
+  //     //    Toast.show({
+  //     //     type:"success",
+  //     //     text1:"Signed in successfully!"
+  //     //   })
+  //     // }
+  //     if (isSignUp) {
+  //     const result = await dispatch(signupUser(data));
+  //     if (signupUser.fulfilled.match(result)) {
+  //       Toast.show({ type: 'success', text1: 'Account created successfully!' });
+  //       navigation.replace('Main');
+  //        await AsyncStorage.setItem('isLoggedIn', 'true');
+  //     } else {
+  //       Toast.show({ type: 'error', text1: result.payload || 'Signup failed' });
+  //     }
+  //   } else {
+  //     const result = await dispatch(loginUser({ email: data.email, password: data.password }));
+  //     if (loginUser.fulfilled.match(result)) {
+  //       Toast.show({ type: 'success', text1: 'Signed in successfully!' });
+  //       navigation.replace('Main');
+  //        await AsyncStorage.setItem('isLoggedIn', 'true');
+  //     } else {
+  //       Toast.show({ type: 'error', text1: result.payload || 'Login failed' });
+  //     }
+  //   }
+  //     //navigation.replace('Main');
+     
+  //   } catch (error) {
+  //     //Alert.alert('Error', 'Something went wrong. Please try again.');
+  //     Toast.show({
+  //       type:"error",
+  //       text1:"Something went wrong. Please try again."
+  //     })
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -552,6 +641,7 @@ const AuthScreen = ({ navigation }) => {
 
             <TouchableOpacity style={styles.socialButton}>
               <FontAwesome name="facebook" size={20} color="#1877f2" />
+              
               <Text style={styles.socialButtonText}>Continue with Facebook</Text>
             </TouchableOpacity>
           </View>
@@ -600,15 +690,15 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb',
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    marginBottom: 16,
+    //paddingVertical: 16,
+    marginBottom: 12,
   },
   textInput: { flex: 1, fontSize: 16, color: '#111827' },
-  errorText: { color: '#ef4444', fontSize: 14, marginBottom: 8, marginLeft: 4 },
+  errorText: { color: '#ef4444', fontSize: 14, marginBottom: 2, marginLeft: 4 },
   createButton: { backgroundColor: '#1f2937', borderRadius: 16, paddingVertical: 16, alignItems: 'center', marginTop: 8 },
   createButtonDisabled: { opacity: 0.6 },
-  createButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 24 },
+  createButtonText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 10 },
   dividerLine: { flex: 1, height: 1, backgroundColor: '#e5e7eb' },
   dividerText: { color: '#9ca3af', fontSize: 14, paddingHorizontal: 16 },
   socialContainer: { marginBottom: 32 },

@@ -25,7 +25,7 @@ const Colors = {
     dark_border:'#6DA5C0',
     light_blue:'#ECF9FF',
     button_lightblue:'#E7F6F3',
-    light_gray: '#E5E5E5B2',
+    light_gray: '#e5e5e5ff',
     light_gray2: '#B3BAC8',
     bg_color: '#F2F4F8',
     light_gray: '#959595',
@@ -38,14 +38,18 @@ const Colors = {
     dark_light_green: '#03B26F',
     bg_orange:'#E38437',
     disabledBtn:'#AEAEAE',
+    grayPRI:'#6B7280',
 
     //primary color
     //primary button
-     darkBlueP1:'#1C2A3A',
-    //  darkBlueP1:'#003366',
+     //darkBlueP1:'#1C2A3A',
+      darkBlueP1:'#003366',
      lightBlueP1:'#b0d7feff',
      lightGrayP1:'#eeefefff',
 
+success: '#2f9e49ff',
+  error: '#e0625eff',   
+  info: '#0781EE',  
      //cardComponent 
      card:{
           activeColor : '#afd7fadc',

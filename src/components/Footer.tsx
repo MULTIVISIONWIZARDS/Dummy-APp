@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Footer: React.FC = () => (
+const Footer: React.FC<{ brand?: string }> = ({ brand = "Vintage" }) => (
   <View style={styles.footer}>
-    <Text style={styles.text}>© {new Date().getFullYear()} AppointmentApp</Text>
+    <Text style={styles.text}>  © {new Date().getFullYear()} {brand}. All rights reserved.</Text>
+    
   </View>
 );
 
