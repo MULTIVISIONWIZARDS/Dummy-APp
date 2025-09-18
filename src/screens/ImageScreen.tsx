@@ -243,6 +243,39 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
+// const slides = [
+//   {
+//     id: "1",
+//     image:
+//       "https://img.freepik.com/free-vector/girl-practicing-yoga-healthy-icons_18591-77150.jpg?t=st=1758187381~exp=1758190981~hmac=dc18732273e093c4daf1ec3808f45b868b5bcc98c6ee6dc404a3705b4498a8f0&w=1480",
+//     title: "Meet Doctors Online",
+//     subtitle: "Connect with Specialized Doctors Online for",
+//     subtitle1:
+//       "Convenient and Comprehensive Medical Consultations.",
+//     button: "Next",
+//   },
+//   {
+//     id: "2",
+//     image:
+//       "https://img.freepik.com/free-vector/people-yoga-outdoor-flat-style_24908-57669.jpg?t=st=1758187224~exp=1758190824~hmac=1208d5e9ad19489acea0f7d417835b42d968647d3382c1c55bbe59d405c3d64c&w=1480",
+//     title: "Connect with Specialists",
+//     subtitle: "Connect with Specialized Doctors Online for",
+//     subtitle1:
+//       "Convenient and Comprehensive Medical Consultations.",
+//     button: "Next",
+//   },
+//   {
+//     id: "3",
+//     image:
+//       "https://img.freepik.com/free-vector/mother-daughter-doing-fitness-outdoors_74855-5893.jpg?t=st=1758187131~exp=1758190731~hmac=69340f685cbfae5059431e71a316f47136ccda5158b9ee2410f51c3fc3437532&w=1480",
+//     title: "Thousands of Online Specialists",
+//     subtitle: "Connect with Specialized Doctors Online for",
+//     subtitle1:
+//       "Convenient and Comprehensive Medical Consultations.",
+//     button: "Get Started",
+//   },
+// ];
+
 const slides = [
   {
     id: "1",

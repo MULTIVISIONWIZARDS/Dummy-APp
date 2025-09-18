@@ -55,7 +55,7 @@ const NotificationsScreen = () => {
     {
       id: '1',
       title: 'Appointment Confirmed',
-      body: 'Your appointment with Dr. Smith is confirmed for 10 Sep, 3:00 PM.',
+      body: 'Your video call with Dr. Smith is confirmed for 10 Sep, 3:00 PM.',
       time: '2h ago',
       type: 'success',
     },
@@ -68,15 +68,15 @@ const NotificationsScreen = () => {
     },
     {
       id: '3',
-      title: 'Appointment Reminder',
-      body: 'Reminder: Your appointment with Dr. Khan is tomorrow at 11:00 AM.',
+      title: 'Subscription Expire',
+      body: 'Reminder: Your subscription expire today at 11:00 AM.',
       time: '1d ago',
       type: 'reminder',
     },
     {
       id: '4',
       title: 'Discount Offer',
-      body: 'Get 20% off on your next health checkup. Limited time offer!',
+      body: 'Get 20% off on your next health susbcription. Limited time offer!',
       time: '2d ago',
       type: 'offer',
     },

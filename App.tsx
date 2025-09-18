@@ -8,13 +8,14 @@ import { store, persistor } from './src/store';
 import Toast from 'react-native-toast-message';
 import toastConfig from './src/utils/toastConfig';
 import Colors from './src/constants/Colors';
+import 'react-native-get-random-values';
+
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
         <NavigationContainer>
-         {/* <StatusBar backgroundColor='#F4F6F8' barStyle="dark-content" /> */}
-
+         <StatusBar backgroundColor={Colors.statusBarP1} barStyle={Colors.statusBarP1Theme} />
           <AppNavigator />
            <Toast config={toastConfig}/>
         </NavigationContainer>

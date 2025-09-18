@@ -387,6 +387,7 @@ const AuthScreen = ({ navigation }) => {
   const dispatch=useDispatch();
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
+  const [show, setShow] = useState(false);
 
   const {
     control,
@@ -414,6 +415,56 @@ const AuthScreen = ({ navigation }) => {
   //   checkLogin();
   // }, []);
 
+
+    
+// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+// import { doc, setDoc, getDoc } from "firebase/firestore";
+// import { auth, db } from '../../firebaseConfig';
+// const onSubmit = async (data: any) => {
+//   setLoading(true);
+
+//   try {
+//     if (isSignUp) {
+//       // SIGN UP
+//       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+//       const user = userCredential.user;
+
+//       // Update display name
+//       await updateProfile(user, { displayName: data.name });
+
+//       // Save locally
+//       await AsyncStorage.setItem("userId", user.uid);
+//       await AsyncStorage.setItem("isLoggedIn", "true");
+
+//       Toast.show({ type: "success", text1: "Account created successfully!" });
+
+//       // Navigate to main screen (or subscription if you want)
+//       navigation.replace("Main");
+
+//     } else {
+//       // LOGIN
+//       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+//       const user = userCredential.user;
+
+//       // Save locally
+//       await AsyncStorage.setItem("userId", user.uid);
+//       await AsyncStorage.setItem("isLoggedIn", "true");
+
+//       Toast.show({ type: "success", text1: "Signed in successfully!" });
+
+//       // Navigate to main screen
+//       navigation.replace("Main");
+//     }
+//   } catch (error: any) {
+//     Toast.show({
+//       type: "error",
+//       text1: error.message || "Something went wrong. Please try again.",
+//     });
+//   } finally {
+//     setLoading(false); // stops loader in all cases
+//   }
+// };
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
@@ -425,7 +476,7 @@ const AuthScreen = ({ navigation }) => {
           const user = result.payload;
           await AsyncStorage.setItem('userId', user.id);
           await AsyncStorage.setItem('isLoggedIn', 'true');
-          Toast.show({ type: 'success', text1: 'Account created successfully!' });
+         // Toast.show({ type: 'success', text1: 'Account created successfully!' });
           navigation.replace('Subscription', { userId: user.id });
         } else {
           Toast.show({ type: 'error', text1: result.payload || 'Signup failed' });
@@ -604,10 +655,11 @@ const AuthScreen = ({ navigation }) => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    secureTextEntry
+                  secureTextEntry={!show}
                   />
                 )}
               />
+             <TouchableOpacity onPress={()=>setShow(!show)}><Icon name={show?'eye':'eye-off'} size={24}/></TouchableOpacity>
             </View>
             {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
 

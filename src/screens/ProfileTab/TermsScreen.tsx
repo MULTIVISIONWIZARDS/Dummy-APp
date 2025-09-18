@@ -62,7 +62,7 @@ const TermsScreen = () => {
 
         <Text style={styles.sectionTitle}>1. Introduction</Text>
         <Text style={styles.paragraph}>
-          Welcome to AppointmentApp. These Terms & Conditions govern your use of our mobile application. 
+          Welcome to Vintage AppointmentApp. These Terms & Conditions govern your use of our mobile application. 
           By using our app, you agree to comply with and be bound by these terms.
         </Text>
 
@@ -76,7 +76,6 @@ const TermsScreen = () => {
         <Text style={styles.sectionTitle}>3. Appointments</Text>
         <Text style={styles.paragraph}>
           AppointmentApp acts as a platform to book, manage, and track appointments. 
-          We are not responsible for delays, cancellations, or service issues caused by providers.
         </Text>
 
         <Text style={styles.sectionTitle}>4. Payments</Text>
