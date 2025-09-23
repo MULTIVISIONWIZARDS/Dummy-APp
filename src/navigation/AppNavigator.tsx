@@ -90,17 +90,20 @@ import { authRoutes, mainRoutes, AuthStackParamList, MainTabParamList } from './
 import AppHeader from '../components/AppHeader';
 import SplashScreen from '../screens/SplashScreen';
 import Colors from '../constants/Colors';
+import useNetworkStatus from '../utils/useNetworkStatus';
+import NoInternetScreen from '../screens/NoInternetScreen';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function MainTabs() {
+
   return (
    <Tab.Navigator
   screenOptions={({ route }) => {
     const current = mainRoutes.find(r => r.name === route.name);
     return {
-      header: (props: any) => <AppHeader {...props} title={current?.options?.title ?? current?.name} />,
+      header: (props: any) => <AppHeader {...props} title={current?.options?.title ?? current?.name}  showBackButton={current?.options.back}/>,
       tabBarIcon: ({ color, size, focused }) => (
         <Icon 
           name={current?.icon ?? 'circle'} 
@@ -131,6 +134,10 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
+        const isConnected = useNetworkStatus();
+  if (!isConnected) {
+    return <NoInternetScreen/>;
+  }
   return (
     <SafeAreaProvider>
       <Stack.Navigator 

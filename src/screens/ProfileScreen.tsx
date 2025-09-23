@@ -411,8 +411,8 @@ const ProfileScreen: React.FC<any> = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.headerTitle}>Profile</Text>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.headerTitle}>
+        {/* <Text style={styles.headerTitle}>Profile</Text> */}
 
         {/* Profile Info Section */}
         <View style={styles.profileSection}>
@@ -516,22 +516,22 @@ const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    textAlign: 'center',
+    // fontSize: 24,
+    // fontWeight: '600',
+    // textAlign: 'center',
     marginTop: 25,
-    marginBottom: 30,
-    color: '#1C1C1E',
+    // marginBottom: 30,
+    // color: '#1C1C1E',
   },
   profileSection: {
     alignItems: 'center',
     marginBottom: 40,
     paddingHorizontal: 20,
   },
-  avatarContainer: { position: 'relative', marginBottom: 20 },
+  avatarContainer: { position: 'relative', marginBottom: 20,borderWidth:2,borderColor:Colors.darkBlueP1,borderRadius:80,padding:2 },
   avatar: {
-    width: 140,
-    height: 140,
+    width: 120,
+    height: 120,
     borderRadius: 100,
     backgroundColor: '#F2F2F7',
   },

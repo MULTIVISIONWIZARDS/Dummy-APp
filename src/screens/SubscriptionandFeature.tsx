@@ -171,14 +171,14 @@
 //       })}
 
 //       {/* Contact / Privacy */}
-//       <View style={styles.contactCard}>
-//         <Text style={styles.contactTitle}>Need more information?</Text>
-//         <Text style={styles.contactText}>Email: support@example.com</Text>
-//         <Text style={styles.contactText}>Phone: +1 (800) 123-4567</Text>
-//         <Text style={styles.contactText}>
-//           Privacy Policy: Your data is securely stored and only used for educational and consult purposes.
-//         </Text>
-//       </View>
+      // <View style={styles.contactCard}>
+      //   <Text style={styles.contactTitle}>Need more information?</Text>
+      //   <Text style={styles.contactText}>Email: support@example.com</Text>
+      //   <Text style={styles.contactText}>Phone: +1 (800) 123-4567</Text>
+      //   <Text style={styles.contactText}>
+      //     Privacy Policy: Your data is securely stored and only used for educational and consult purposes.
+      //   </Text>
+      // </View>
 //     </ScrollView>
 //   );
 // };
@@ -202,24 +202,24 @@
 //     justifyContent: 'space-between',
 //     alignItems: 'center',
 //   },
-//   tierName: { fontSize: 18, fontWeight: '600', color: Colors.darkBlueP1 },
-//   tierPrice: { fontSize: 16, fontWeight: '500', color: '#333' },
-//   arrow: { fontSize: 25, color: Colors.darkBlueP1, fontWeight: '700' },
-//   feature: { marginTop: 8, fontSize: 14, color: '#333', lineHeight: 20 },
-//   contactCard: {
-//     backgroundColor: '#FFF',
-//     borderRadius: 12,
-//     padding: 20,
-//     marginTop: 10,
-//     shadowColor: '#000',
-//     shadowOpacity: 0.06,
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowRadius: 4,
-//     elevation: 1,
-//     marginBottom: 50,
-//   },
-//   contactTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
-//   contactText: { fontSize: 14, lineHeight: 20, color: '#555', marginBottom: 4 },
+  // tierName: { fontSize: 18, fontWeight: '600', color: Colors.darkBlueP1 },
+  // tierPrice: { fontSize: 16, fontWeight: '500', color: '#333' },
+  // arrow: { fontSize: 25, color: Colors.darkBlueP1, fontWeight: '700' },
+  // feature: { marginTop: 8, fontSize: 14, color: '#333', lineHeight: 20 },
+  // contactCard: {
+  //   backgroundColor: '#FFF',
+  //   borderRadius: 12,
+  //   padding: 20,
+  //   marginTop: 10,
+  //   shadowColor: '#000',
+  //   shadowOpacity: 0.06,
+  //   shadowOffset: { width: 0, height: 2 },
+  //   shadowRadius: 4,
+  //   elevation: 1,
+  //   marginBottom: 50,
+  // },
+  // contactTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
+  // contactText: { fontSize: 14, lineHeight: 20, color: '#555', marginBottom: 4 },
 // });
 
 // export default HelpScreen;
@@ -245,7 +245,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const HelpScreen = () => {
+const SubscriptionandFeature = () => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [subscription, setSubscription] = useState<any>(null);
   const navigation = useNavigation();
@@ -348,14 +348,21 @@ const HelpScreen = () => {
         </View>
       ) : (
         <TouchableOpacity
-          style={styles.activeCard}
-          onPress={() => navigation.navigate('Subscription')}
-        >
-          <Text style={styles.activeTitle}>No Active Subscription</Text>
-          <Text style={styles.activeText}>
-            You have not purchased any plan yet.
-          </Text>
-        </TouchableOpacity>
+  style={styles.activeCard}
+  onPress={() => navigation.navigate("Subscription")}
+  activeOpacity={0.8}
+>
+  <Text style={styles.activeTitle}>No Active Subscription</Text>
+  <Text style={styles.activeText}>
+    🚀 Upgrade now to enjoy unlimited access!{"\n"}
+    Tap here to view available plans.
+  </Text>
+  <View style={styles.ctaButton}>
+    <Text style={styles.ctaText}>View Plans</Text>
+  </View>
+  
+</TouchableOpacity>
+
       )}
 
       {/* All Plans */}
@@ -388,6 +395,14 @@ const HelpScreen = () => {
           </View>
         );
       })}
+            <View style={styles.contactCard}>
+        <Text style={styles.contactTitle}>Need more information?</Text>
+        <Text style={styles.contactText}>Email: support@example.com</Text>
+        <Text style={styles.contactText}>Phone: +1 (800) 123-4567</Text>
+        <Text style={styles.contactText}>
+          Privacy Policy: Your data is securely stored and only used for educational and consult purposes.
+        </Text>
+      </View>
     </ScrollView>
   );
 };
@@ -429,6 +444,31 @@ const styles = StyleSheet.create({
     color: Colors.darkBlueP1,
   },
   activeText: { fontSize: 14, color: '#333', marginBottom: 4 },
+  contactCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 1,
+    marginBottom: 50,
+  },
+  contactTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
+  contactText: { fontSize: 14, lineHeight: 20, color: '#555', marginBottom: 4 },
+  ctaButton: {
+  backgroundColor: "#fff",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 25,
+},
+ctaText: {
+  color:Colors.darkBlueP1,
+  fontSize: 15,
+  fontWeight: "600",
+},
 });
 
-export default HelpScreen;
+export default SubscriptionandFeature;

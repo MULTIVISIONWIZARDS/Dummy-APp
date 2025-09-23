@@ -242,7 +242,7 @@ const CARD_HEIGHT = height * 0.55;
 const SPACING = 20;
 const SIDE_PADDING = (width - CARD_WIDTH) / 2;
 
-interface SubscriptionPlan { id: string; name: string; price: number; yearlyPrice: number; description: string; features: string[]; color: string; icon: string; paymentUrl:string; }
+interface SubscriptionPlan { id: string; name: string; price: number; yearlyPrice: number; description: string; features: string[]; color: string; icon: string; paymentUrl:string;extraBenefits:string []}
 // const plans: SubscriptionPlan[] = [
 //   { id: 'basic', name: 'Basic', price: 4.95, yearlyPrice: 49.95, description: 'Perfect for getting started', features: ['Daily informational content'], color: '#6B7280', icon: 'shield' ,paymentUrl:'https://buy.stripe.com/test_dRm8wOcCT0Wt2aNaHS7g400'},
 //   { id: 'silver', name: 'Silver', price: 9.95, yearlyPrice: 99.95, description: 'Great for regular users', features: ['Daily content', '1 online consult / month'], color: '#3B82F6', icon: 'military-tech',paymentUrl:'https://buy.stripe.com/test_bJefZgcCT48FeXz5ny7g401' },
@@ -262,6 +262,14 @@ const plans: SubscriptionPlan[] = [
     color: '#6B7280',
     icon: 'shield',
     paymentUrl: 'https://buy.stripe.com/test_7sY28q1YfdJf6r303e7g404',
+      extraBenefits:[
+    "Priority customer support",
+    "Access to premium tutorials",
+    "Exclusive webinars and workshops",
+    "Downloadable resources & guides",
+    "Early access to new features",
+  ]
+    
   },
   {
     id: 'silver',
@@ -279,6 +287,13 @@ const plans: SubscriptionPlan[] = [
     color: '#3B82F6',
     icon: 'military-tech',
     paymentUrl: 'https://buy.stripe.com/test_28EbJ0byP7kR2aNcQ07g405',
+    extraBenefits:[
+    "Priority customer support",
+    "Access to premium tutorials",
+    "Exclusive webinars and workshops",
+    "Downloadable resources & guides",
+    "Early access to new features",
+  ]
   },
   {
     id: 'gold',
@@ -296,6 +311,13 @@ const plans: SubscriptionPlan[] = [
     color: '#dbba00ff',
     icon: 'star',
     paymentUrl: 'https://buy.stripe.com/test_6oU9ASbyPeNj5mZcQ07g406',
+      extraBenefits:[
+    "Priority customer support",
+    "Access to premium tutorials",
+    "Exclusive webinars and workshops",
+    "Downloadable resources & guides",
+    "Early access to new features",
+  ]
     
     
   },
@@ -317,6 +339,13 @@ const plans: SubscriptionPlan[] = [
     color: '#8B5CF6',
     icon: 'diamond',
     paymentUrl: 'https://buy.stripe.com/test_3cI7sK9qH34BdTv4ju7g407',
+      extraBenefits:[
+    "Priority customer support 24/7",
+    "Access to premium tutorials",
+    "Exclusive webinars and workshops",
+    "Downloadable resources & guides",
+    "Early access to new features",
+  ]
   },
 ];
 
@@ -347,17 +376,22 @@ export default function SubscriptionScreen() {
   //   ]);
   // };
 const handleSubscribe = (plan) => {
- 
-     navigation.navigate('PaymentWebView', {
-      paymentUrl: plan.paymentUrl,
-      planId: plan.id,
-      planName:plan.name,
-      userId:userId
-    });
+   navigation.navigate("SubscriptionDetails", {
+    plan,
+    isYearly,
+    userId,
+
+  });
+    //  navigation.navigate('PaymentWebView', {
+    //   paymentUrl: plan.paymentUrl,
+    //   planId: plan.id,
+    //   planName:plan.name,
+    //   userId:userId
+    // });
 };
   return (
     <LinearGradient colors={['white', 'white',]} style={{ flex: 1 }}>
-    {/* <LinearGradient colors={['#fcfcebff', '#f7dcf9ff', '#f3e3f5ff']} style={{ flex: 1 }}> */}
+    {/* <LinearGradient colors={['#ffffaeff', '#f7dcf9ff', '#f3e3f5ff']} style={{ flex: 1 }}> */}
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <Text style={styles.headerTitle}>Choose Your Plan</Text>
 
@@ -390,6 +424,7 @@ const handleSubscribe = (plan) => {
             const translateY = scrollX.interpolate({ inputRange, outputRange: [20, 0, 20], extrapolate: 'clamp' });
 
             return (
+              
               <Animated.View style={[styles.card, { transform: [{ scale }, { translateY }], opacity, borderColor: selectedPlan === item.id ? item.color : '#E5E7EB', marginLeft: index === 0 ? SIDE_PADDING : SPACING / 2, marginRight: index === plans.length - 1 ? SIDE_PADDING : SPACING / 2 }]}>
                 <TouchableOpacity activeOpacity={0.9} style={{ flex: 1 }} onPress={() => setSelectedPlan(item.id)}>
                   <View style={styles.iconWrap}><View style={{ backgroundColor: item.color + '20', padding: 12, borderRadius: 50 }}><Icon name={item.icon} size={28} color={item.color} /></View></View>
@@ -399,13 +434,50 @@ const handleSubscribe = (plan) => {
                   {isYearly && <Text style={styles.saveText}>Save ${(item.price * 12 - item.yearlyPrice).toFixed(0)} yearly</Text>}
                   <View style={{ marginTop: 10 }}>{item.features.map(f => <View key={f} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}><Icon name="check-circle" size={18} color="#10B981" /><Text style={{ marginLeft: 8, color: '#374151' }}>{f}</Text></View>)}</View>
                   <TouchableOpacity style={[styles.subscribeBtn, { backgroundColor: selectedPlan === item.id ? item.color : '#9CA3AF' }]} disabled={selectedPlan !== item.id} onPress={() => handleSubscribe(item)}>
-                    <Text style={styles.subscribeBtnText}>{selectedPlan === item.id ? 'Subscribe' : 'Choose Plan'}</Text>
+                    <Text style={styles.subscribeBtnText}>{selectedPlan === item.id ? 'View Plan' : 'Choose Plan'}</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
               </Animated.View>
+              
             );
+
           }}
         />
+<View style={styles.pagination}>
+  {plans.map((_, i) => {
+    const inputRange = [
+      (i - 1) * (CARD_WIDTH + SPACING),
+      i * (CARD_WIDTH + SPACING),
+      (i + 1) * (CARD_WIDTH + SPACING),
+    ];
+
+    const scale = scrollX.interpolate({
+      inputRange,
+      outputRange: [0.8, 1.4, 0.8],
+      extrapolate: "clamp",
+    });
+
+    const opacity = scrollX.interpolate({
+      inputRange,
+      outputRange: [0.3, 1, 0.3],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <Animated.View
+        key={i.toString()}
+        style={[
+          styles.dot,
+          {
+            transform: [{ scale }],
+            opacity,
+          },
+        ]}
+      />
+    );
+  })}
+</View>
+
 
         <View style={{ paddingHorizontal: 20, marginTop: 25 }}>
           <Text style={{ fontSize: 16, color: '#374151', marginBottom: 8 }}>Benefits of our plans:</Text>
@@ -419,6 +491,7 @@ const handleSubscribe = (plan) => {
 }
 
 const styles = StyleSheet.create({
+  
   card: { width: CARD_WIDTH, height: CARD_HEIGHT+80, backgroundColor: '#ffffffe8', borderRadius: 20, padding: 20, borderWidth: 2, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10, elevation: 6 },
   iconWrap: { alignItems: 'center', marginBottom: 12 },
   planName: { fontSize: 20, fontWeight: '700', textAlign: 'center', color: '#111827' },
@@ -428,6 +501,20 @@ const styles = StyleSheet.create({
   subscribeBtn: { marginTop: 'auto', paddingVertical: 14, borderRadius: 12 },
   subscribeBtnText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
   headerTitle: { fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: '#1f2937', marginTop: 25, marginBottom: 25 },
+ pagination: {
+  flexDirection: "row",
+  justifyContent: "center",
+  marginTop: 20,
+},
+dot: {
+  height: 8,
+  width: 8,
+  borderRadius: 4,
+  backgroundColor: "#374151",
+  marginHorizontal: 6,
+},
+
+
 });
 
 

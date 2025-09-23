@@ -271,7 +271,8 @@ export default function SplashScreen() {
         } else if (isLoggedIn && userId && subscribed === "true") {
           navigation.dispatch(StackActions.replace("Main"));
         } else if (isLoggedIn && userId && subscribed !== "true") {
-          navigation.dispatch(StackActions.replace("Subscription", { userId }));
+          navigation.dispatch(StackActions.replace("Main"));
+          // navigation.dispatch(StackActions.replace("Subscription", { userId }));
         } else {
           navigation.dispatch(StackActions.replace("Login"));
         }
@@ -282,7 +283,7 @@ export default function SplashScreen() {
   }, [fadeAnim, scaleAnim, pulseAnim, navigation]);
 
   if (showSplash) {
-    return <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />;
+    return <AnimatedSplashScreen onFinish={() => setShowSplash(true)} />;
   }
 
   return (

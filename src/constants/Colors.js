@@ -43,7 +43,8 @@ const Colors = {
     //primary color
     //primary button
      //darkBlueP1:'#1C2A3A',
-      darkBlueP1:'#003366',
+      darkBlueP1:'#1f2937',
+      // darkBlueP1:'#003366',
       
       
       statusBarP1:'#636363ff',

@@ -14,8 +14,8 @@ import styles from '../ProfileTab/StyleSheet';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateProfile } from '../../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'react-native-image-picker';
-
+// import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 const EditProfileScreen: React.FC = () => {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
@@ -55,7 +55,7 @@ console.log(":::::::::::::::GGGGGGGGGGGGG::::::::::::",user);
   };
 
   // Pick a new avatar
-  const pickImage = () => {
+  const pickIjmage = () => {
     ImagePicker.launchImageLibrary(
       {
         mediaType: 'photo',
@@ -74,6 +74,25 @@ console.log(":::::::::::::::GGGGGGGGGGGGG::::::::::::",user);
       }
     );
   };
+const pickImageProfileCrop = async () => {
+  try {
+    const image = await ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+      cropperCircleOverlay: true, // shows a circle overlay for profile pics
+      mediaType: 'photo',
+      includeBase64: true,
+    });
+
+    setAvatar(image.path);
+  } catch (error) {
+    if (error.message !== 'User cancelled image selection') {
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  }
+};
+
 
   const handleSave = () => {
     if (!name || !phone || !email) {
@@ -96,12 +115,28 @@ console.log(":::::::::::::::GGGGGGGGGGGGG::::::::::::",user);
 
     Alert.alert('Success', 'Profile updated successfully');
   };
+const pickImageFreeCrop = async () => {
+  try {
+    const image = await ImagePicker.openPicker({
+      cropping: true,       // allows cropping
+      mediaType: 'photo',
+      includeBase64: true,  // optional if you need base64
+      freeStyleCropEnabled: true, // free aspect ratio
+    });
+
+    setAvatar(image.path);
+  } catch (error) {
+    if (error.message !== 'User cancelled image selection') {
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  }
+};
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.avatarSection}>
         <Image source={{ uri: avatar }} style={styles.avatar} />
-        <TouchableOpacity style={styles.changePhotoButton} onPress={pickImage}>
+        <TouchableOpacity style={styles.changePhotoButton} onPress={pickImageProfileCrop}>
           <Text style={styles.changePhotoText}>Change Photo</Text>
         </TouchableOpacity>
       </View>

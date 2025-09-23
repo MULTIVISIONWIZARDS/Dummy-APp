@@ -383,6 +383,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { loginUser, signupUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 const AuthScreen = ({ navigation }) => {
   const dispatch=useDispatch();
   const [loading, setLoading] = useState(false);
@@ -401,7 +403,16 @@ const AuthScreen = ({ navigation }) => {
       password: '',
     },
   });
+  
 
+
+  useEffect(() => {
+    // Configure Google Sign-In only once
+  GoogleSignin.configure({
+  webClientId: 'AIzaSyDls6N2ogUOE4WGsA-r91HZ69LhgQvrk18', // from Firebase console
+   offlineAccess: true,
+});
+  }, []);
   //   useEffect(() => {
   //   const checkLogin = async () => {
   //     const userId = await AsyncStorage.getItem('userId');
@@ -464,6 +475,24 @@ const AuthScreen = ({ navigation }) => {
 //     setLoading(false); // stops loader in all cases
 //   }
 // };
+const handleGoogleLogin = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+
+    // Type assertion or optional chaining
+    const idToken = userInfo.idToken || (userInfo as any).idToken;
+
+    if (!idToken) throw new Error('No ID token returned from Google Sign-In');
+
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    const userCredential = await auth().signInWithCredential(googleCredential);
+
+    console.log('Logged in user:', userCredential.user.uid);
+  } catch (error) {
+    console.log('Google login error:', error);
+  }
+};
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -477,7 +506,8 @@ const AuthScreen = ({ navigation }) => {
           await AsyncStorage.setItem('userId', user.id);
           await AsyncStorage.setItem('isLoggedIn', 'true');
          // Toast.show({ type: 'success', text1: 'Account created successfully!' });
-          navigation.replace('Subscription', { userId: user.id });
+          navigation.replace('Main');
+          // navigation.replace('Subscription', { userId: user.id });
         } else {
           Toast.show({ type: 'error', text1: result.payload || 'Signup failed' });
         }
@@ -493,7 +523,8 @@ const AuthScreen = ({ navigation }) => {
           if (subscribed === 'true') {
             navigation.replace('Main');
           } else {
-            navigation.replace('Subscription', { userId: user.id });
+            // navigation.replace('Subscription', { userId: user.id });
+                      navigation.replace('Main');
           }
         } else {
           //Toast.show({ type: 'error', text1: result.payload || 'Login failed',position:"bottom" });
@@ -575,8 +606,10 @@ const AuthScreen = ({ navigation }) => {
             </View>
           </View>
 
-          <Text style={styles.brandName}>HealthPal</Text>
+          <Text style={styles.brandName}>Vintage</Text>
+          {/* <Text style={styles.brandName}>HealthPal</Text> */}
           <Text style={styles.title}>{isSignUp ? 'Create Account' : 'Sign In'}</Text>
+          {/* <Text style={styles.title}>{isSignUp ? 'Create Account' : 'Sign In'}</Text> */}
           <Text style={styles.subtitle}>
             {isSignUp ? 'We are here to help you!' : 'Welcome back, login to continue'}
           </Text>
@@ -686,7 +719,7 @@ const AuthScreen = ({ navigation }) => {
 
           {/* Social Login Buttons */}
           <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton}>
+            <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
               <FontAwesome name="google" size={20} color="#4285f4" />
               <Text style={styles.socialButtonText}>Continue with Google</Text>
             </TouchableOpacity>

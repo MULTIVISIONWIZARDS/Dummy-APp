@@ -110,7 +110,8 @@ const HomeGame = () => {
         <View style={styles.gameButtons}>
           <TouchableOpacity
             style={[styles.gameButton, styles.breathingButton]}
-            onPress={() => navigation.navigate('breathing')}
+            activeOpacity={0.7}
+             onPress={() => navigation.navigate('breathing')}
           >
             <Text style={styles.gameButtonEmoji}>🫁</Text>
             <Text style={styles.gameButtonText}>Box Breathing</Text>

@@ -101,12 +101,12 @@ export default function PaymentSuccessScreen() {
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    try {
-      // Play local sound
-      SoundPlayer.playSoundFile("phone", "mp3");
-    } catch (e) {
-      console.log("Error playing sound:", e);
-    }
+    // try {
+    //   // Play local sound
+    //   SoundPlayer.playSoundFile("phone", "mp3");
+    // } catch (e) {
+    //   console.log("Error playing sound:", e);
+    // }
 
     // Animate checkmark
     Animated.sequence([

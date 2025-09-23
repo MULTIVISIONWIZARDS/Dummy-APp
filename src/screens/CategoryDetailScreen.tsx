@@ -246,11 +246,11 @@ export default function PatientDietScreen({ route }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Animated.Text style={[styles.screenTitle, { opacity: fadeAnim }]}>
           {item.title} - Details
-        </Animated.Text>
+        </Animated.Text> 
 
         {!hasSubscription ? (
           // If user does NOT have subscription, only show Unlock button
-          <View style={{ marginTop: 50, alignItems: "center" }}>
+          <View style={{ marginTop: 50, alignItems: "center"}}>
             <TouchableOpacity
               style={styles.subscribeButton}
               onPress={() => navigation.navigate("Subscription")}

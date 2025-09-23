@@ -45,6 +45,8 @@ export const signupUser = createAsyncThunk<
   { name: string; email: string; password: string },
   { rejectValue: string }
 >('auth/signupUser', async (payload, thunkAPI) => {
+  console.log(":::::::::::::::::authAlice:::::",payload.name);
+  
   try {
     await new Promise(resolve => setTimeout(resolve, 1200));
     const user = { id: '1', name: payload.name, email: payload.email };

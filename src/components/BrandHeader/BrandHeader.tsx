@@ -8,12 +8,14 @@ type Props = {
   title?: string;
   subtitle?: string;
   onMessagePress?: () => void; // callback for right icon press
+    chatCount?: number;
 };
 
 const BrandHeader: React.FC<Props> = ({
   title = "Vintage",
   subtitle = "Your Health, Our Priority",
   onMessagePress,
+  chatCount=0
 }) => {
   return (
     <View style={styles.container}>
@@ -28,9 +30,11 @@ const BrandHeader: React.FC<Props> = ({
 
       <TouchableOpacity onPress={onMessagePress} style={styles.rightIcon}>
         <Icon1 name="send" size={26} color={Colors.darkBlue} />
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>3</Text>
-        </View>
+       {chatCount > 0 && ( // show only if > 0
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{chatCount}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
