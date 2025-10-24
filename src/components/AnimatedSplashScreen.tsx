@@ -339,7 +339,7 @@ const AnimatedSplashScreen = ({onFinish}) => {
             <View style={styles.logo}>
               <View style={styles.logoInner}>
                 {/* <Text style={styles.logoText}>📅</Text> */}
-                <Image style={{height:50,width:50,borderRadius:40}} source={{uri:"https://img.freepik.com/free-vector/hospital-logo-design-vector-medical-cross_53876-136743.jpg?uid=R210148761&ga=GA1.1.641802148.1754460082&semt=ais_hybrid&w=740&q=80"}}/>
+                <Image style={{height:70,width:70,borderRadius:60}} source={require('../assets/applogo.jpg')}/>
               </View>
             </View>
           </Animated.View>
@@ -388,6 +388,7 @@ const AnimatedSplashScreen = ({onFinish}) => {
               onPress={handleGetStarted}
               activeOpacity={0.8}
             >
+              {/* <Text style={styles.buttonText}>Heal Naturally</Text> */}
               <Text style={styles.buttonText}>Get Started</Text>
               <View style={styles.buttonIcon}>
                 {/* <Text style={styles.buttonArrow}>→</Text> */}

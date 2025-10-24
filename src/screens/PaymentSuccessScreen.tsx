@@ -93,6 +93,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import SoundPlayer from "react-native-sound-player";
 import Colors from "../constants/Colors";
+import { AuthStackRoutes } from "../navigation/Routes";
 
 export default function PaymentSuccessScreen() {
   const navigation = useNavigation<any>();
@@ -125,7 +126,7 @@ export default function PaymentSuccessScreen() {
 
     // Auto navigate to Main after 3 seconds
     const timer = setTimeout(() => {
-      navigation.replace("Main");
+      navigation.replace(AuthStackRoutes.Main);
     }, 5000); // 3000ms = 3 seconds
 
     // Clear timeout if component unmounts
@@ -151,7 +152,7 @@ export default function PaymentSuccessScreen() {
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.7}
-        onPress={() => navigation.replace("Main")}
+        onPress={() => navigation.replace(AuthStackRoutes.Main)}
       >
         <Text style={styles.buttonText}>Done</Text>
       </TouchableOpacity>

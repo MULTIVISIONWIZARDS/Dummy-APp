@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Colors from "../../constants/Colors";
 import Icon1 from "react-native-vector-icons/Feather";
@@ -20,7 +20,8 @@ const BrandHeader: React.FC<Props> = ({
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Icon name="hospital-building" size={28} color={Colors.darkBlue} />
+        {/* <Icon name="hospital-building" size={28} color={Colors.darkBlue} /> */}\
+        <Image source={require('../../assets/applogo.jpg')} style={{height:37,width:37}}/>
         <View style={{ marginLeft: 8 }}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>

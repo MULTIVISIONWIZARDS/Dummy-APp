@@ -239,6 +239,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
+import { AuthStackRoutes } from '../navigation/Routes';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -349,7 +350,7 @@ const SubscriptionandFeature = () => {
       ) : (
         <TouchableOpacity
   style={styles.activeCard}
-  onPress={() => navigation.navigate("Subscription")}
+  onPress={() => navigation.navigate(AuthStackRoutes.Subscription)}
   activeOpacity={0.8}
 >
   <Text style={styles.activeTitle}>No Active Subscription</Text>

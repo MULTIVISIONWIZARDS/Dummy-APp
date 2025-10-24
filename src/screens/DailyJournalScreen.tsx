@@ -1,105 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, TextInput, ScrollView, Alert, StyleSheet } from 'react-native';
-// import { Calendar } from 'react-native-calendars';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import Colors from '../constants/Colors';
-
-// type SubscriptionTier = 'Free' | 'Tier1' | 'Tier2' | 'Tier3';
-// const dummySubscription: SubscriptionTier = 'Tier2';
-
-// const DailyJournalScreen = () => {
-//   const [entries, setEntries] = useState<{ [key: string]: string }>({});
-//   const [selectedDate, setSelectedDate] = useState(
-//     new Date().toISOString().split('T')[0]
-//   );
-//   const [text, setText] = useState('');
-
-//   useEffect(() => {
-//     const loadEntries = async () => {
-//       const data = await AsyncStorage.getItem('journalEntries');
-//       if (data) setEntries(JSON.parse(data));
-//     };
-//     loadEntries();
-//   }, []);
-
-//   const saveEntry = async () => {
-//     if (dummySubscription === 'Free') {
-//       Alert.alert('Upgrade Required', 'Journal access is available for Tier1 and above.');
-//       return;
-//     }
-//     const newEntries = { ...entries, [selectedDate]: text };
-//     setEntries(newEntries);
-//     await AsyncStorage.setItem('journalEntries', JSON.stringify(newEntries));
-//     setText('');
-//     Alert.alert('Saved', `Entry for ${selectedDate} saved.`);
-//   };
-
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-//       <Text style={styles.header}>Add your symptoms</Text>
-//      <Calendar
-//   // Only allow dates from today onwards
-//   minDate={new Date().toISOString().split('T')[0]}
-  
-//   // Optional: limit to a certain number of months in the future
-//   maxDate={new Date(new Date().setMonth(new Date().getMonth() + 6)).toISOString().split('T')[0]}
-
-//   onDayPress={(day) => {
-//     setSelectedDate(day.dateString);
-//     setText(entries[day.dateString] || '');
-//   }}
-//   markedDates={{
-//     ...Object.keys(entries).reduce((acc, date) => {
-//       acc[date] = { marked: true };
-//       return acc;
-//     }, {} as any),
-//     [selectedDate]: { selected: true, selectedColor: Colors.darkBlueP1 },
-//   }}
-// />
-
-//       <Text style={styles.label}>Entry for {selectedDate}:</Text>
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Type your symptoms here..."
-//         value={text}
-//         onChangeText={setText}
-//         multiline
-//       />
-//       <Text style={styles.saveButton} onPress={saveEntry}>
-//         Save Entry
-//       </Text>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: { padding: 10, flexGrow: 1, backgroundColor: '#fff' },
-//   header: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
-//   label: { marginTop: 10, fontWeight: 'bold' },
-//   input: {
-//     borderWidth: 1,
-//     borderColor: '#ddd',
-//     borderRadius: 5,
-//     padding: 10,
-//     minHeight: 100,
-//     marginTop: 5,
-//     textAlignVertical: 'top',
-//   },
-//   saveButton: {
-//     marginTop: 10,
-//     backgroundColor: Colors.darkBlueP1,
-//     color: '#fff',
-//     padding: 10,
-//     textAlign: 'center',
-//     borderRadius: 5,
-//     fontWeight: 'bold',
-//   },
-// });
-
-// export default DailyJournalScreen;
-
-
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -113,9 +11,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import { API_BASE } from '../constants/Constant';
 
 type SubscriptionTier = 'Free' | 'Tier1' | 'Tier2' | 'Tier3';
 const dummySubscription: SubscriptionTier = 'Tier2';
+
+const API_BASE_URL = `${API_BASE}/api/symptoms`;
 
 const DailyJournalScreen = () => {
   const today = new Date().toISOString().split('T')[0];
@@ -123,6 +25,7 @@ const DailyJournalScreen = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const [text, setText] = useState('');
 
+  // Load local entries (offline support)
   useEffect(() => {
     const loadEntries = async () => {
       const data = await AsyncStorage.getItem('journalEntries');
@@ -133,11 +36,37 @@ const DailyJournalScreen = () => {
           setText(parsed[today]);
         }
       }
+
+      // Fetch from backend (sync)
+      fetchEntriesFromBackend();
     };
     loadEntries();
   }, []);
 
+  const fetchEntriesFromBackend = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token'); // from login
+      const res = await axios.get(`${API_BASE_URL}/my-journals`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data.success) {
+        const backendEntries: { [key: string]: string } = {};
+        res.data.data.forEach((item: any) => {
+          const date = new Date(item.date).toISOString().split('T')[0];
+          backendEntries[date] = item.text;
+        });
+        setEntries(backendEntries);
+        await AsyncStorage.setItem('journalEntries', JSON.stringify(backendEntries));
+      }
+    } catch (error) {
+      console.log('Fetch failed', error.message);
+    }
+  };
+
   const saveEntry = async () => {
+    console.log(":::::::D:::::::::::",dummySubscription);
+    
     if (dummySubscription === 'Free') {
       Alert.alert(
         'Upgrade Required',
@@ -146,14 +75,24 @@ const DailyJournalScreen = () => {
       return;
     }
 
-    // ✅ Always use today for first-time save
     const targetDate = selectedDate || today;
-
     const newEntries = { ...entries, [targetDate]: text };
-    setEntries(newEntries); // update local state immediately
+    setEntries(newEntries);
     await AsyncStorage.setItem('journalEntries', JSON.stringify(newEntries));
-    setSelectedDate(targetDate); // ensure date is set
-    Alert.alert('Saved', `Entry for ${targetDate} saved.`);
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      await axios.post(
+        `${API_BASE_URL}/add`,
+        { text, date: targetDate },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      Alert.alert('Saved', `Entry for ${targetDate} saved.`);
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to sync with server. Saved locally.');
+    }
   };
 
   const deleteEntry = async (date: string) => {
@@ -161,14 +100,23 @@ const DailyJournalScreen = () => {
     delete newEntries[date];
     setEntries(newEntries);
     await AsyncStorage.setItem('journalEntries', JSON.stringify(newEntries));
-    Alert.alert('Deleted', `Entry for ${date} deleted.`);
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      await axios.delete(`${API_BASE_URL}/${date}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Alert.alert('Deleted', `Entry for ${date} deleted.`);
+    } catch (error) {
+      console.log('Delete failed', error.message);
+    }
+
     if (date === selectedDate) {
       setText('');
       setSelectedDate(today);
     }
   };
 
-  // ✅ Sort entries ascending
   const sortedEntries = Object.entries(entries).sort(
     ([dateA], [dateB]) =>
       new Date(dateA).getTime() - new Date(dateB).getTime()
@@ -186,28 +134,27 @@ const DailyJournalScreen = () => {
         onChangeText={setText}
         multiline
       />
-<TouchableOpacity
-  style={[
-    styles.saveButton,
-    !text.trim() && { backgroundColor: '#ccc' }, // gray when disabled
-  ]}
-  onPress={saveEntry}
-  disabled={!text.trim()} // disable if empty
->
-  <Text
-    style={{
-      color: '#fff',
-      textAlign: 'center',
-      borderRadius: 5,
-      fontWeight: 'bold',
-    }}
-  >
-    {entries[selectedDate] ? 'Update Entry' : 'Save Entry'}
-  </Text>
-</TouchableOpacity>
 
+      <TouchableOpacity
+        style={[
+          styles.saveButton,
+          !text.trim() && { backgroundColor: '#ccc' },
+        ]}
+        onPress={saveEntry}
+        disabled={!text.trim()}
+      >
+        <Text
+          style={{
+            color: '#fff',
+            textAlign: 'center',
+            borderRadius: 5,
+            fontWeight: 'bold',
+          }}
+        >
+          {entries[selectedDate] ? 'Update Entry' : 'Save Entry'}
+        </Text>
+      </TouchableOpacity>
 
-      {/* ✅ Show all entries */}
       <Text style={styles.listHeader}>Your Journal Entries</Text>
       {sortedEntries.length === 0 ? (
         <Text style={styles.emptyText}>No entries yet.</Text>
@@ -227,7 +174,7 @@ const DailyJournalScreen = () => {
             <View style={styles.entryHeader}>
               <Text style={styles.entryDate}>{date}</Text>
               <TouchableOpacity onPress={() => deleteEntry(date)}>
-                <Icon name="trash-outline" size={20} color="red"/>
+                <Icon name="trash-outline" size={20} color="red" />
               </TouchableOpacity>
             </View>
             <Text style={styles.entryText} numberOfLines={2}>
@@ -260,11 +207,9 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 10,
-    
     padding: 10,
-    backgroundColor: Colors.button_green,borderRadius:8
-   
-   
+    backgroundColor: Colors.button_green,
+    borderRadius: 8,
   },
   listHeader: {
     marginTop: 20,

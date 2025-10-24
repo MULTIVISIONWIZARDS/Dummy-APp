@@ -79,6 +79,7 @@ import {
   
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthStackRoutes } from '../../navigation/Routes';
 
 const HomeGame = () => {
   const navigation=useNavigation();
@@ -104,14 +105,14 @@ const HomeGame = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={[styles.homeContent, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
-        <Text style={styles.title}>🌿 Wellness Arcade 🌿</Text>
+        <Text style={styles.title}>🌿 Wellness Arcade</Text>
         <Text style={styles.subtitle}>Your pocket-friendly wellness playground!</Text>
         
         <View style={styles.gameButtons}>
           <TouchableOpacity
             style={[styles.gameButton, styles.breathingButton]}
-            activeOpacity={0.7}
-             onPress={() => navigation.navigate('breathing')}
+            activeOpacity={0.8}
+             onPress={() => navigation.navigate(AuthStackRoutes.BoxBreathing)}
           >
             <Text style={styles.gameButtonEmoji}>🫁</Text>
             <Text style={styles.gameButtonText}>Box Breathing</Text>
@@ -120,7 +121,8 @@ const HomeGame = () => {
 
           <TouchableOpacity
             style={[styles.gameButton, styles.tapButton]}
-            onPress={() => navigation.navigate('tapHappy')}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate(AuthStackRoutes.TapHappy)}
           >
             <Text style={styles.gameButtonEmoji}>😃</Text>
             <Text style={styles.gameButtonText}>Tap Happy Faces</Text>
@@ -130,7 +132,8 @@ const HomeGame = () => {
 
         <TouchableOpacity
           style={styles.scoresButton}
-          onPress={() => navigation.navigate('scores')}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate(AuthStackRoutes.Scores)}
         >
           <Text style={styles.scoresButtonText}>📊 View Scores</Text>
         </TouchableOpacity>

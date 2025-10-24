@@ -240,6 +240,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthStackRoutes } from "../navigation/Routes";
 
 const { width, height } = Dimensions.get("window");
 
@@ -326,7 +327,7 @@ const ImageScreen = ({ navigation }) => {
   const nextSlide = async () => {
     if (currentIndex === slides.length - 1) {
       await AsyncStorage.setItem("hasOnboarded", "true");
-      navigation.replace("Login");
+      navigation.replace(AuthStackRoutes.Login);
       return;
     }
     flatListRef.current.scrollToIndex({
@@ -335,7 +336,7 @@ const ImageScreen = ({ navigation }) => {
   };
 const skip=async()=>{
    await AsyncStorage.setItem("hasOnboarded", "true");
-         navigation.replace("Login");
+         navigation.replace(AuthStackRoutes.Login);
 }
   const renderIndicator = () => (
     <View style={styles.indicatorContainer}>

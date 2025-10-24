@@ -235,6 +235,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Colors from '../constants/Colors';
+import { AuthStackRoutes } from '../navigation/Routes';
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.75;
@@ -376,7 +377,7 @@ export default function SubscriptionScreen() {
   //   ]);
   // };
 const handleSubscribe = (plan) => {
-   navigation.navigate("SubscriptionDetails", {
+   navigation.navigate(AuthStackRoutes.SubscriptionDetails, {
     plan,
     isYearly,
     userId,

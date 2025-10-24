@@ -177,6 +177,8 @@ import Greeting from "../components/Greeting";
 import BookMeetingScreen from "../components/BookinMeet/BookMeetingScreen";
 import { useAppSelector } from "../store/hooks";
 import CommonSubscription from "../components/CommonSubscription";
+import { AuthStackRoutes, MainTabRoutes } from "../navigation/Routes";
+import VideoCarousel from "../components/VideoPlayer";
 
 const CHAT_STORAGE_KEY = "user_chat_messages";
 
@@ -227,7 +229,19 @@ const HomeScreen: React.FC<any> = () => {
       loadChatCount();
     }, [])
   );
-
+const banner = [
+  { 
+    id: 1, 
+    videoUri: "https://videos.pexels.com/video-files/33818382/14352759_2560_1440_60fps.mp4", 
+    title: "Daily Nutrition Tips" 
+  },
+  { 
+    id: 2, 
+    videoUri: "https://www.pexels.com/download/video/4536085/", 
+    title: "Daily Nutrition Tips" 
+  },
+ 
+];
   const banners = [
     { id: 1, uri: "https://img.freepik.com/free-photo/healthy-food-fruits-vegetables_53876-40332.jpg", title: "Daily Nutrition Tips" },
     { id: 2, uri: "https://img.freepik.com/free-photo/young-woman-exercising-gym_1303-12569.jpg", title: "Exercise & Fitness" },
@@ -243,7 +257,9 @@ const HomeScreen: React.FC<any> = () => {
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       
       <BrandHeader
-        onMessagePress={() => navigation.navigate("Consults")}
+      title ="Vintage"
+      subtitle ="Your Health, Our Priority"
+        onMessagePress={() => navigation.navigate(MainTabRoutes.Consults)}
         chatCount={chatCount}
       />
 
@@ -255,19 +271,19 @@ const HomeScreen: React.FC<any> = () => {
         <Greeting />
 
        
-        <BannerCarousel
+        <VideoCarousel data={banner}/>
+        {/* <BannerCarousel
           data={banners}
           height={180}
           width={Dimensions.get("window").width - 20}
           tickerOverlay
           text="🎉 Daily Wellness Update: Eat more veggies today! | Exercise: 10 push-ups | Mindfulness: 5-min break | Drink 2 liters of water"
           speed={60}
-        />
-
+        /> */}
         <BookMeetingScreen />
         <CategoryGrid
           onPressItem={(item) =>
-            navigation.navigate("CategoryDetail", { item })
+            navigation.navigate(AuthStackRoutes.CategoryDetail, { item })
           }
         />
         <MoodTracker />
@@ -278,20 +294,20 @@ const HomeScreen: React.FC<any> = () => {
          */}
         {!hasSubscription && <CommonSubscription/>}
 
-        <View style={{ height: 0 }} />
+        {/* <View style={{ height: 0 }} /> */}
         {/* <View style={{ height: 100 }} /> */}
+      <Footer />
       </ScrollView>
 
       
       <TouchableOpacity
         style={styles.floatingButtonCom}
         activeOpacity={0.9}
-        onPress={() => navigation.navigate("Journal")}
+        onPress={() => navigation.navigate(AuthStackRoutes.Journal)}
       >
         <Icon name="book" size={24} color="#fff" />
       </TouchableOpacity>
 
-      <Footer />
     </SafeAreaView>
   ); 
 };

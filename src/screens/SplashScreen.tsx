@@ -208,6 +208,7 @@ import {
 import { StackActions, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimatedSplashScreen from "../components/AnimatedSplashScreen";
+import { AuthStackRoutes } from "../navigation/Routes";
 
 const { height, width } = Dimensions.get("window");
 
@@ -267,14 +268,14 @@ export default function SplashScreen() {
       ]).start(() => {
         // ✅ Navigate after animation
         if (!hasOnboarded) {
-          navigation.dispatch(StackActions.replace("Onboard"));
+          navigation.dispatch(StackActions.replace(AuthStackRoutes.Onboard));
         } else if (isLoggedIn && userId && subscribed === "true") {
-          navigation.dispatch(StackActions.replace("Main"));
+          navigation.dispatch(StackActions.replace(AuthStackRoutes.Main));
         } else if (isLoggedIn && userId && subscribed !== "true") {
-          navigation.dispatch(StackActions.replace("Main"));
+          navigation.dispatch(StackActions.replace(AuthStackRoutes.Main));
           // navigation.dispatch(StackActions.replace("Subscription", { userId }));
         } else {
-          navigation.dispatch(StackActions.replace("Login"));
+          navigation.dispatch(StackActions.replace(AuthStackRoutes.Login));
         }
       });
     };
@@ -289,9 +290,7 @@ export default function SplashScreen() {
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <Animated.Image
-        source={{
-          uri: "https://img.freepik.com/free-photo/doctors-day-handsome-brunette-cute-guy-medical-gown-with-crossed-hands_140725-162942.jpg?w=1480",
-        }}
+        source={require('../assets/applogo.jpg')}
         style={[
           styles.logo,
           { transform: [{ scale: Animated.multiply(scaleAnim, pulseAnim) }] },
@@ -299,7 +298,7 @@ export default function SplashScreen() {
         resizeMode="cover"
       />
       <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>
-        My Health App
+        Vintage
       </Animated.Text>
     </Animated.View>
   );

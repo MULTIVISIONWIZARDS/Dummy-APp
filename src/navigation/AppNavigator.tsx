@@ -92,6 +92,7 @@ import SplashScreen from '../screens/SplashScreen';
 import Colors from '../constants/Colors';
 import useNetworkStatus from '../utils/useNetworkStatus';
 import NoInternetScreen from '../screens/NoInternetScreen';
+import CustomTabButton from '../components/TabIconTOOL';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -113,7 +114,9 @@ function MainTabs() {
         />
       ),
      
-          
+            tabBarButton: (props) => (
+        <CustomTabButton {...props} routeName={route.name} />
+      ),
           tabBarStyle: { height: 64, paddingBottom: 10,borderTopRightRadius:20,borderTopLeftRadius:20 },
           tabBarLabelStyle: { paddingBottom: 10, fontSize: 12},
           headerShown: true,

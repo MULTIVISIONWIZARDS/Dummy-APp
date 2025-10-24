@@ -68,7 +68,7 @@ const ScoresScreen = ({ navigation }) => {
                    <Text style={styless.gameTitle}>📊 Your Scores</Text>
                  </View>
       <ScrollView style={styles.scoresContainer}>
-        <View style={styles.scoreSection}>
+        {/* <View style={styles.scoreSection}>
           <Text style={styles.scoreSectionTitle}>🫁 Box Breathing Sessions</Text>
           {boxBreathingScores.length === 0 ? (
             <Text style={styles.noScoresText}>No sessions yet. Start breathing! 🌿</Text>
@@ -82,7 +82,7 @@ const ScoresScreen = ({ navigation }) => {
               </View>
             ))
           )}
-        </View>
+        </View> */}
 
         <View style={styles.scoreSection}>
           <Text style={styles.scoreSectionTitle}>😃 Tap Happy Faces High Scores</Text>

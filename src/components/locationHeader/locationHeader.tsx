@@ -407,6 +407,7 @@ import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Colors from '../../constants/Colors';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useNavigation } from '@react-navigation/native';
+import { AuthStackRoutes } from '../../navigation/Routes';
 
 const dummyAddresses = [
   {
@@ -590,7 +591,7 @@ const navigation =useNavigation();
         {/* Notification Icon */}
         <TouchableOpacity
           style={styles.notificationBtn}
-          onPress={() => navigation.navigate('NotificationsScreen')}
+          onPress={() => navigation.navigate(AuthStackRoutes.NotificationsScreen)}
           activeOpacity={0.7}
         >
           <Icon name="bell" size={22} color={'#4B5563'} />

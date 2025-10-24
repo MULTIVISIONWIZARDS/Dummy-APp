@@ -325,6 +325,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'react-native-image-picker';
+import { AuthStackRoutes } from '../navigation/Routes';
 
 const ProfileScreen: React.FC<any> = () => {
   const dispatch = useAppDispatch();
@@ -397,17 +398,17 @@ const ProfileScreen: React.FC<any> = () => {
       setLogoutModalVisible(false);
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }],
+        routes: [{ name: AuthStackRoutes.Login }],
       });
     } catch (error) {
       console.error('Error during logout:', error);
     }
   };
 
-  const handleEditProfile = () => navigation.navigate('EditProfileScreen');
-  const handleNotifications = () => navigation.navigate('NotificationsScreen');
-  const handleHelp = () => navigation.navigate('HelpScreen' as never);
-  const handleTerms = () => navigation.navigate('TermsScreen' as never);
+  const handleEditProfile = () => navigation.navigate(AuthStackRoutes.EditProfileScreen);
+  const handleNotifications = () => navigation.navigate(AuthStackRoutes.NotificationsScreen);
+  const handleHelp = () => navigation.navigate(AuthStackRoutes.HelpScreen as never);
+  const handleTerms = () => navigation.navigate(AuthStackRoutes.TermsScreen as never);
 
   return (
     <View style={styles.container}>
@@ -420,8 +421,8 @@ const ProfileScreen: React.FC<any> = () => {
             <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
             <TouchableOpacity
               style={styles.editAvatarButton}
-              onPress={pickImage}
-              activeOpacity={0.8}
+              // onPress={pickImage}
+              activeOpacity={1}
             >
               <Icon name="edit" size={16} color="#FFFFFF" />
             </TouchableOpacity>

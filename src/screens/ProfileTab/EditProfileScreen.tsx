@@ -8,25 +8,29 @@ import {
   ScrollView,
   Image,
   Alert,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../ProfileTab/StyleSheet';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateProfile } from '../../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
+import Toast from 'react-native-toast-message';
+
 const EditProfileScreen: React.FC = () => {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
-console.log(":::::::::::::::GGGGGGGGGGGGG::::::::::::",user);
 
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [avatar, setAvatar] = useState(user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face');
+  const [avatar, setAvatar] = useState(
+    user?.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png'
+  );
 
-  // Load avatar from AsyncStorage if previously saved
+  // Load user info from AsyncStorage
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
@@ -54,89 +58,108 @@ console.log(":::::::::::::::GGGGGGGGGGGGG::::::::::::",user);
     }
   };
 
-  // Pick a new avatar
-  const pickIjmage = () => {
-    ImagePicker.launchImageLibrary(
-      {
-        mediaType: 'photo',
-        maxWidth: 300,
-        maxHeight: 300,
-        quality: 0.7,
-      },
-      (response) => {
-        if (response.didCancel) return;
-        if (response.errorCode) {
-          Alert.alert('Error', response.errorMessage || 'Failed to pick image');
-        } else {
-          const uri = response.assets[0].uri;
-          setAvatar(uri);
-        }
+  // Android camera permission
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs access to your camera to take photos',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
       }
-    );
-  };
-const pickImageProfileCrop = async () => {
-  try {
-    const image = await ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      cropperCircleOverlay: true, // shows a circle overlay for profile pics
-      mediaType: 'photo',
-      includeBase64: true,
-    });
-
-    setAvatar(image.path);
-  } catch (error) {
-    if (error.message !== 'User cancelled image selection') {
-      Alert.alert('Error', 'Failed to pick image');
     }
-  }
-};
+    return true;
+  };
 
+  // Open camera
+  const openCamera = async () => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      Alert.alert('Permission Denied', 'Camera access is required to take photos.');
+      return;
+    }
 
+    try {
+      const image = await ImagePicker.openCamera({
+        width: 300,
+        height: 300,
+        cropping: true,
+        cropperCircleOverlay: true,
+        mediaType: 'photo',
+          useFrontCamera: true,
+      });
+      setAvatar(image.path);
+    } catch (error: any) {
+      if (error.message !== 'User cancelled image selection') {
+        Alert.alert('Error', 'Failed to capture image');
+      }
+    }
+  };
+
+  // Pick image from gallery
+  const pickImageGallery = async () => {
+    try {
+      const image = await ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+        cropperCircleOverlay: true,
+        mediaType: 'photo',
+      });
+      setAvatar(image.path);
+    } catch (error: any) {
+      if (error.message !== 'User cancelled image selection') {
+        Alert.alert('Error', 'Failed to pick image');
+      }
+    }
+  };
+
+  // ActionSheet style picker (camera or gallery)
+  const pickOrCapture = () => {
+    Alert.alert('Update Profile Picture', 'Choose an option', [
+      { text: 'Camera', onPress: openCamera },
+      { text: 'Gallery', onPress: pickImageGallery },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
+  // Save profile
   const handleSave = () => {
     if (!name || !phone || !email) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    const updatedUser = {
-      ...user,
-      name,
-      phone,
-      email,
-      avatar,
-    };
+    const updatedUser = { ...user, name, phone, email, avatar };
 
-    // Update Redux store
+    // Update Redux
     dispatch(updateProfile(updatedUser));
-    // Update AsyncStorage
+
+    // Save to AsyncStorage
     saveUserInfo(updatedUser);
 
-    Alert.alert('Success', 'Profile updated successfully');
+    // Alert.alert('Success', 'Profile updated successfully');
+    Toast.show({
+  type:"success",
+  text1:"Profile updated successfully"
+})
   };
-const pickImageFreeCrop = async () => {
-  try {
-    const image = await ImagePicker.openPicker({
-      cropping: true,       // allows cropping
-      mediaType: 'photo',
-      includeBase64: true,  // optional if you need base64
-      freeStyleCropEnabled: true, // free aspect ratio
-    });
-
-    setAvatar(image.path);
-  } catch (error) {
-    if (error.message !== 'User cancelled image selection') {
-      Alert.alert('Error', 'Failed to pick image');
-    }
-  }
-};
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.avatarSection}>
         <Image source={{ uri: avatar }} style={styles.avatar} />
-        <TouchableOpacity style={styles.changePhotoButton} onPress={pickImageProfileCrop}>
+        <TouchableOpacity style={styles.changePhotoButton} onPress={pickOrCapture}>
           <Text style={styles.changePhotoText}>Change Photo</Text>
         </TouchableOpacity>
       </View>
@@ -147,7 +170,6 @@ const pickImageFreeCrop = async () => {
           style={styles.input}
           value={name}
           onChangeText={setName}
-       
           placeholder="Enter your full name"
         />
 
@@ -156,7 +178,6 @@ const pickImageFreeCrop = async () => {
           style={styles.input}
           value={phone}
           onChangeText={setPhone}
-             placeholderTextColor='#1C1C1E'
           placeholder="Enter your phone number"
           keyboardType="phone-pad"
         />
@@ -171,7 +192,11 @@ const pickImageFreeCrop = async () => {
           autoCapitalize="none"
         />
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.saveButton}
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>Save Changes</Text>
         </TouchableOpacity>
       </View>
