@@ -50,13 +50,53 @@ export const signupUser = createAsyncThunk<
   }
 });
 
-// ✅ LOGIN USER
+
+// export const loginUser = createAsyncThunk<
+//   User,
+//   { email: string; password: string },
+//   { rejectValue: string }
+// >('auth/loginUser', async (credentials, thunkAPI) => {
+//   try {
+//     const response = await axios.post(`${API_URL}/login`, credentials);
+
+//     const { token, user } = response.data;
+//     await AsyncStorage.setItem('token', token);
+//     await AsyncStorage.setItem('user', JSON.stringify(user));
+
+//     return { ...user, token };
+//   } catch (error: any) {
+//     console.log('LOGIN ERROR:', error.response?.data);
+//     const message =
+//       error.response?.data?.message ||
+//       error.response?.data?.errors?.[0]?.msg ||
+//       'Login failed';
+//     return thunkAPI.rejectWithValue(message);
+//   }
+// });
+
 export const loginUser = createAsyncThunk<
   User,
   { email: string; password: string },
   { rejectValue: string }
 >('auth/loginUser', async (credentials, thunkAPI) => {
   try {
+    const { email, password } = credentials;
+
+    // Dummy login check before API call
+    // if (email === 'test@test.com' && password === '123456') {
+    //   const dummyUser = {
+    //     id: 'dummy_id_001',
+    //     name: 'Test User',
+    //     email: 'test@test.com'
+    //   };
+
+    //   await AsyncStorage.setItem('token', 'dummy_token_123');
+    //   await AsyncStorage.setItem('user', JSON.stringify(dummyUser));
+
+    //   return { ...dummyUser, token: 'dummy_token_123' };
+    // }
+
+    // If not dummy login, proceed with real API
     const response = await axios.post(`${API_URL}/login`, credentials);
 
     const { token, user } = response.data;
@@ -64,6 +104,7 @@ export const loginUser = createAsyncThunk<
     await AsyncStorage.setItem('user', JSON.stringify(user));
 
     return { ...user, token };
+
   } catch (error: any) {
     console.log('LOGIN ERROR:', error.response?.data);
     const message =

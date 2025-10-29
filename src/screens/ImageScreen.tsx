@@ -276,38 +276,39 @@ const { width, height } = Dimensions.get("window");
 //     button: "Get Started",
 //   },
 // ];
-
+ 
 const slides = [
   {
     id: "1",
-    image:
-      "https://img.freepik.com/free-photo/healthcare-workers-preventing-virus-quarantine-campaign-concept-cheerful-friendly-asian-female-physician-doctor-with-clipboard-daily-checkup-standing-white-background_1258-107867.jpg?w=740&q=80",
-    title: "Meet Doctors Online",
-    subtitle: "Connect with Specialized Doctors Online for",
-    subtitle1:
-      "Convenient and Comprehensive Medical Consultations.",
+    image:require('../assets/logo1.jpg'),
+    title: "Subscribe to daily updates on wellness",
+    subtitle: "hormone replacement and supplements and optional ",
+    subtitle1:'consults with a real nurse practitioner of 29 years of'
+      ,
+      subtitle2:" experience to help you navigate your wellness and or hormone replacement journey",
     button: "Next",
   },
   {
     id: "2",
     image:
-      "https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg?w=740&q=80",
-    title: "Connect with Specialists",
-    subtitle: "Connect with Specialized Doctors Online for",
-    subtitle1:
-      "Convenient and Comprehensive Medical Consultations.",
+    require('../assets/logo2.jpg'),
+    title: "Subscribe to daily updates on wellness",
+    subtitle: "hormone replacement and supplements and optional ",
+    subtitle1:'consults with a real nurse practitioner of 29 years of'
+      ,
+      subtitle2:" experience to help you navigate your wellness and or hormone replacement journey",
     button: "Next",
   },
-  {
-    id: "3",
-    image:
-      "https://img.freepik.com/free-photo/portrait-smiling-medical-worker-girl-doctor-white-coat-with-stethoscope-pointing-fingers-left-showing-medical-clinic-advertisement-torquoise-background_1258-87675.jpg?w=740&q=80",
-    title: "Thousands of Online Specialists",
-    subtitle: "Connect with Specialized Doctors Online for",
-    subtitle1:
-      "Convenient and Comprehensive Medical Consultations.",
-    button: "Get Started",
-  },
+  // {
+  //   id: "3",
+  //   image:
+  //     require('../assets/logo1.jpg'),
+  //   title: "Thousands of Online Specialists",
+  //   subtitle: "Connect with Specialized Doctors Online for",
+  //   subtitle1:
+  //     "Convenient and Comprehensive Medical Consultations.",
+  //   button: "Get Started",
+  // },
 ];
 
 const ImageScreen = ({ navigation }) => {
@@ -358,7 +359,7 @@ const skip=async()=>{
     <View style={styles.slide}>
       {/* Top Image */}
       <Image
-        source={{ uri: item.image }}
+        source={  item.image }
         style={styles.image}
         resizeMode="cover"
       />
@@ -368,6 +369,7 @@ const skip=async()=>{
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.subtitle}>{item.subtitle}</Text>
         <Text style={styles.subtitle1}>{item.subtitle1}</Text>
+        <Text style={styles.subtitle2}>{item.subtitle2}</Text>
 
         {/* Button */}
         <TouchableOpacity onPress={nextSlide} activeOpacity={0.9}>
@@ -375,6 +377,12 @@ const skip=async()=>{
             <Text style={styles.buttonText}>{item.button}</Text>
           </View>
         </TouchableOpacity>
+{/* <View style={styles.bottomSection}>
+  {renderIndicator()}
+  <TouchableOpacity activeOpacity={0.7} onPress={skip}>
+    <Text style={styles.skipText}>Skip</Text>
+  </TouchableOpacity>
+</View> */}
 
         {/* Indicators */}
         {renderIndicator()}
@@ -420,18 +428,20 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: height * 0.65,
+    height: height * 0.55,
   },
   card: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 25,
-    paddingVertical: 30,
-    alignItems: "center",
-    marginTop: -20, // overlaps image slightly for smooth effect
-  },
+  flex: 1,
+  backgroundColor: "#fff",
+  borderTopLeftRadius: 30,
+  borderTopRightRadius: 30,
+  paddingHorizontal: 25,
+  paddingVertical: 25,
+  marginTop: -30,
+  justifyContent: "space-between",
+  alignItems: "center",
+},
+
   title: {
     fontSize: 20,
     fontWeight: "700",
@@ -448,7 +458,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.darkBlueP1,
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+   subtitle2: {
+    fontSize: 14,
+    color: Colors.darkBlueP1,
+    textAlign: "center",
+    // marginBottom: 20,
   },
   button: {
     height: 48,
