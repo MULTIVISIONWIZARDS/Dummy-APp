@@ -179,6 +179,9 @@ import { useAppSelector } from "../store/hooks";
 import CommonSubscription from "../components/CommonSubscription";
 import { AuthStackRoutes, MainTabRoutes } from "../navigation/Routes";
 import VideoCarousel from "../components/VideoPlayer";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Text strings must be rendered within a <Text> component']);
 
 const CHAT_STORAGE_KEY = "user_chat_messages";
 

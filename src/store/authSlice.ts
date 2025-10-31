@@ -18,6 +18,7 @@ export interface AuthState {
 }
 
 const API_URL = `${API_BASE}/api/auth`; // 👈 use your LAN IP (not localhost)
+const APIRL = `${API_BASE}/api/users`; // 👈 use your LAN IP (not localhost)
 
 const initialState: AuthState = {
   user: null,
@@ -125,7 +126,7 @@ export const fetchCurrentUser = createAsyncThunk<
     const token = await AsyncStorage.getItem('token');
     if (!token) return thunkAPI.rejectWithValue('No token found');
 
-    const response = await axios.get(`${API_URL}/me`, {
+    const response = await axios.get(`${APIRL}/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -147,7 +148,7 @@ export const updateProfile = createAsyncThunk<
     const token = await AsyncStorage.getItem('token');
     if (!token) return thunkAPI.rejectWithValue('No token found');
 
-    const response = await axios.put(`${API_URL}/update`, payload, {
+    const response = await axios.put(`${APIRL}/profile`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
