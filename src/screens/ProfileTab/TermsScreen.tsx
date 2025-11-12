@@ -105,7 +105,7 @@ const TermsScreen = () => {
         <Text style={styles.paragraph}>
           If you have any questions regarding these Terms & Conditions, please contact us at:{"\n\n"}
           📧 support@appointmentapp.com{"\n"}
-          ☎ +1 (234) 567-890
+        
         </Text>
       </ScrollView>
     </View>

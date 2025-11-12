@@ -97,10 +97,10 @@ const Footer: React.FC<FooterProps> = ({
     { label: 'LinkedIn', icon: 'linkdin' },
   ];
 const socialLinks = [
-  { label: 'Twitter', icon: 'logo-twitter', url: 'https://twitter.com/yourprofile' },
+  // { label: 'Twitter', icon: 'logo-twitter', url: 'https://twitter.com/yourprofile' },
   { label: 'Facebook', icon: 'logo-facebook', url: 'https://facebook.com/yourprofile' },
   { label: 'Instagram', icon: 'logo-instagram', url: 'https://instagram.com/yourprofile' },
-  { label: 'LinkedIn', icon: 'logo-linkedin', url: 'https://linkedin.com/in/yourprofile' },
+  // { label: 'LinkedIn', icon: 'logo-linkedin', url: 'https://linkedin.com/in/yourprofile' },
 ];
   return (
     <Animated.View
@@ -150,12 +150,12 @@ const socialLinks = [
       <View style={styles.mainContent}>
         {/* Brand Section with Logo Placeholder */}
         <View style={styles.brandSection}>
-          {/* <View style={[styles.logoPlaceholder, { 
+          <View style={[styles.logoPlaceholder, { 
             borderColor: primaryColor,
           }]}>
           
-            <Image source={require('../assets/applogo.jpg')}  style={{height:30,width:30,borderRadius:30,resizeMode:"contain"}}/>
-          </View> */}
+            <Image source={require('../assets/applogo.jpg')}  style={{height:34,width:34,borderRadius:30,resizeMode:"contain"}}/>
+          </View>
           <Text style={styles.brandName}>{brand}</Text>
           <Text style={styles.tagline}>Excellence in Every Detail</Text>
         </View>

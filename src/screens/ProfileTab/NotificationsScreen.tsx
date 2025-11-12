@@ -1,50 +1,3 @@
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   TouchableOpacity,
-//   StyleSheet,
-//   ScrollView,
-//   Image,
-//   Alert,
-// } from 'react-native';
-
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-// import styles from './StyleSheet'
-
-
-// // screens/NotificationsScreen.tsx
-// const NotificationsScreen: React.FC = () => {
-//   const [pushEnabled, setPushEnabled] = useState(true);
-//   const [emailEnabled, setEmailEnabled] = useState(false);
-  
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.settingItem}>
-//         <Text style={styles.settingText}>Push Notifications</Text>
-//         <TouchableOpacity 
-//           style={[styles.toggle, pushEnabled && styles.toggleActive]}
-//           onPress={() => setPushEnabled(!pushEnabled)}
-//         >
-//           <View style={[styles.toggleThumb, pushEnabled && styles.toggleThumbActive]} />
-//         </TouchableOpacity>
-//       </View>
-      
-//       <View style={styles.settingItem}>
-//         <Text style={styles.settingText}>Email Notifications</Text>
-//         <TouchableOpacity 
-//           style={[styles.toggle, emailEnabled && styles.toggleActive]}
-//           onPress={() => setEmailEnabled(!emailEnabled)}
-//         >
-//           <View style={[styles.toggleThumb, emailEnabled && styles.toggleThumbActive]} />
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-// export default NotificationsScreen;
-
 
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
@@ -74,12 +27,13 @@ const NotificationsScreen = () => {
       type: 'reminder',
     },
     {
-      id: '4',
-      title: 'Discount Offer',
-      body: 'Get 20% off on your next health susbcription. Limited time offer!',
-      time: '2d ago',
-      type: 'offer',
-    },
+  id: '5',
+  title: 'Telemedicine Fee',
+  body: 'An additional $50 fee has been applied for telemedicine consultation services.',
+  time: 'Just now',
+  type: 'info',
+}
+
   ]);
 
   const renderIcon = (type) => {
@@ -90,8 +44,8 @@ const NotificationsScreen = () => {
         return <Icon name="message-text" size={28} color="#007bff" />;
       case 'reminder':
         return <Icon name="bell-ring" size={28} color="#ffc107" />;
-      case 'offer':
-        return <Icon name="tag" size={28} color="#ff5722" />;
+        case 'info':
+  return <Icon name="information" size={28} color="#17a2b8" />;
       default:
         return <Icon name="bell" size={28} color="#333" />;
     }

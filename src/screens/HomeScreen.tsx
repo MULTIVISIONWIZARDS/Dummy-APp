@@ -180,6 +180,7 @@ import CommonSubscription from "../components/CommonSubscription";
 import { AuthStackRoutes, MainTabRoutes } from "../navigation/Routes";
 import VideoCarousel from "../components/VideoPlayer";
 import { LogBox } from 'react-native';
+import PatientTestimonial from "./PatientTestimonial";
 
 LogBox.ignoreLogs(['Text strings must be rendered within a <Text> component']);
 
@@ -261,7 +262,8 @@ const banner = [
       
       <BrandHeader
       title ="Vintage"
-      subtitle ="Your Health, Our Priority"
+      subtitle ="Care Rooted in Experience. Centered on You."
+      // subtitle ="Your Health, Our Priority"
         onMessagePress={() => navigation.navigate(MainTabRoutes.Consults)}
         chatCount={chatCount}
       />
@@ -300,6 +302,7 @@ const banner = [
         {/* <View style={{ height: 0 }} /> */}
         {/* <View style={{ height: 100 }} /> */}
       <Footer />
+      <PatientTestimonial/>
       </ScrollView>
 
       
@@ -310,7 +313,6 @@ const banner = [
       >
         <Icon name="book" size={24} color="#fff" />
       </TouchableOpacity>
-
     </SafeAreaView>
   ); 
 };

@@ -569,8 +569,9 @@ export default function App() {
 
     setLoading(true);
     try {
+       const userId = await AsyncStorage.getItem('userId');
       const { data } = await api.post('/book', {
-        userId: CONFIG.USER_ID,
+        userId: userId,
         topic: 'Video Call',
       });
 

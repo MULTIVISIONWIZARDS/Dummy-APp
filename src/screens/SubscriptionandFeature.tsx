@@ -399,7 +399,7 @@ const SubscriptionandFeature = () => {
             <View style={styles.contactCard}>
         <Text style={styles.contactTitle}>Need more information?</Text>
         <Text style={styles.contactText}>Email: support@example.com</Text>
-        <Text style={styles.contactText}>Phone: +1 (800) 123-4567</Text>
+        {/* <Text style={styles.contactText}>Phone: +1 (800) 123-4567</Text> */}
         <Text style={styles.contactText}>
           Privacy Policy: Your data is securely stored and only used for educational and consult purposes.
         </Text>
