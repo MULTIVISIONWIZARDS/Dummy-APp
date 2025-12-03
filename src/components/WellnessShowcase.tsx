@@ -127,7 +127,40 @@ import {
 } from "react-native";
 import axios from "axios";
 import { API_BASE } from "../constants/Constant";
-
+const wellnessData = [
+  {
+    id: "diet",
+    icon: "🥗",
+    color: "#10B981",
+    title: "Diet",
+    subtitle: "Palm-sized protein + half plate veggies.",
+    detail: "Avoid: Sugary cereals. Myth: Carbs at night cause fat gain (❌).",
+  },
+  {
+    id: "exercise",
+    icon: "💪",
+    color: "#3B82F6",
+    title: "Exercise",
+    subtitle: "Routine: 3 min warm-up, 3× circuit, stretch.",
+    detail: "Challenge: 10 push-ups today 💥",
+  },
+  {
+    id: "hormones",
+    icon: "🧬",
+    color: "#8B5CF6",
+    title: "Hormones",
+    subtitle: "Cortisol helps manage stress & energy.",
+    detail: "Balanced by sleep, movement & relaxation.",
+  },
+  {
+    id: "supplements",
+    icon: "💊",
+    color: "#F59E0B",
+    title: "Supplements",
+    subtitle: "Vitamin D ☀️ supports immunity.",
+    detail: "Many adults are low; sunlight & testing help.",
+  },
+];
 // 🧱 Widget component
 const Widget = ({ icon, color, title, subtitle, detail }: any) => (
   <View style={[styles.widget, { borderLeftColor: color }]}>
@@ -186,7 +219,7 @@ const SkeletonHeader = () => {
 };
 
 export default function WellnessDashboard() {
-  const [wellnessData, setWellnessData] = useState<any[]>([]);
+  const [wellnessDataa, setWellnessData] = useState<any[]>();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -232,7 +265,7 @@ export default function WellnessDashboard() {
       {loading ? (
         [...Array(4)].map((_, i) => <SkeletonWidget key={i} />)
       ) : wellnessData.length > 0 ? (
-        wellnessData.map((item) => <Widget key={item._id} {...item} />)
+        wellnessData.map((item) => <Widget key={item.id} {...item} />)
       ) : (
         <Text style={styles.emptyText}>No wellness items found.</Text>
       )}

@@ -154,7 +154,7 @@ const socialLinks = [
             borderColor: primaryColor,
           }]}>
           
-            <Image source={require('../assets/applogo.jpg')}  style={{height:34,width:34,borderRadius:30,resizeMode:"contain"}}/>
+            <Image source={require('../assets/applogo.jpg')}  style={{height:115,width:115,borderRadius:30,resizeMode:"contain"}}/>
           </View>
           <Text style={styles.brandName}>{brand}</Text>
           <Text style={styles.tagline}>Excellence in Every Detail</Text>
@@ -348,8 +348,8 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   logoPlaceholder: {
-    width: 35,
-    height: 35,
+    width: 118,
+    height: 118,
     borderRadius: 32,
     borderWidth: 3,
     justifyContent: 'center',

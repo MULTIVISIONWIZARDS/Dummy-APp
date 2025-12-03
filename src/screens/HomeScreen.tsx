@@ -246,16 +246,7 @@ const banner = [
   },
  
 ];
-  const banners = [
-    { id: 1, uri: "https://img.freepik.com/free-photo/healthy-food-fruits-vegetables_53876-40332.jpg", title: "Daily Nutrition Tips" },
-    { id: 2, uri: "https://img.freepik.com/free-photo/young-woman-exercising-gym_1303-12569.jpg", title: "Exercise & Fitness" },
-    { id: 3, uri: "https://img.freepik.com/free-vector/dna-helix-science-background_23-2148993570.jpg", title: "Hormone Health Insights" },
-    { id: 4, uri: "https://img.freepik.com/free-vector/medication-pills-supplements-concept_23-2148993296.jpg", title: "Supplement Spotlight" },
-    { id: 5, uri: "https://img.freepik.com/free-photo/woman-sleeping-comfortable-bed_1150-47230.jpg", title: "Sleep & Recovery" },
-    { id: 6, uri: "https://img.freepik.com/free-vector/stressed-businessman-concept_23-2148475452.jpg", title: "Stress Management" },
-    { id: 7, uri: "https://img.freepik.com/free-vector/meditation-concept-illustration_23-2148475460.jpg", title: "Mindfulness & Relaxation" },
-    { id: 8, uri: "https://img.freepik.com/free-photo/glass-water-with-lemon_1203-8495.jpg", title: "Hydration Tips" },
-  ];
+
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>

@@ -171,7 +171,7 @@ const onSubmit = async (data) => {
             <View style={styles.logoBackground}>
               {/* <Icon name="heart-pulse" size={32} color="#fff" />
                */}
-               <Image source={require('../assets/applogo.jpg')} style={{height:50,width:50}}/>
+               <Image source={require('../assets/applogo.jpg')} style={{height:115,width:115}}/>
             </View>
           </View>
 
@@ -323,16 +323,16 @@ const onSubmit = async (data) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f9fafb' },
   scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 24 },
-  logoContainer: { alignItems: 'center', marginBottom: 16 },
+  logoContainer: { alignItems: 'center', marginBottom: 20 },
   logoBackground: {
-    width: 64,
-    height: 64,
+    width: 125,
+    height: 125,
     backgroundColor: '#151111ff',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  brandName: { fontSize: 24, fontWeight: '500', color: '#6b7280', textAlign: 'center', marginBottom: 8 },
+  brandName: { fontSize: 28, fontWeight: '500', color: '#6b7280', textAlign: 'center', marginBottom: 8 },
   title: { fontSize: 24, fontWeight: '600', color: '#111827', textAlign: 'center', marginBottom: 8 },
   subtitle: { fontSize: 16, color: '#6b7280', textAlign: 'center', marginBottom: 32 },
   formContainer: { marginBottom: 24 },

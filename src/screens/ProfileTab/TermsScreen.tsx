@@ -104,7 +104,7 @@ const TermsScreen = () => {
         <Text style={styles.sectionTitle}>8. Contact Us</Text>
         <Text style={styles.paragraph}>
           If you have any questions regarding these Terms & Conditions, please contact us at:{"\n\n"}
-          📧 support@appointmentapp.com{"\n"}
+          📧 vinwithjenn@yahoo.com{"\n"}
         
         </Text>
       </ScrollView>

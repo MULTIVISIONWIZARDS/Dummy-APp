@@ -1,312 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   TouchableOpacity,
-//   Image,
-//   ScrollView,
-//   StatusBar,
-//   Modal,
-//   Alert,
-// } from 'react-native';
-// import { useAppDispatch, useAppSelector } from '../store/hooks';
-// import { logout } from '../store/authSlice';
-// import Colors from '../constants/Colors';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useNavigation } from '@react-navigation/native';
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-// import * as ImagePicker from 'react-native-image-picker';
-
-// const ProfileScreen: React.FC<any> = () => {
-//   const dispatch = useAppDispatch();
-//   const navigation = useNavigation();
-//   const user = useAppSelector(s => s.auth.user);
-//   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-//   const [userInfo, setUserInfo] = useState({
-//     name: user?.name || 'Daniel Martinez',
-//     phone: user?.phone || '+123 856479683',
-//     avatar:
-//       user?.avatar ||
-//       'https://cdn-icons-png.flaticon.com/512/847/847969.png',
-//   });
-
-//   // Load avatar from AsyncStorage on mount
-//   useEffect(() => {
-//     const loadAvatar = async () => {
-//       try {
-//         const storedInfo = await AsyncStorage.getItem('userInfo');
-//         if (storedInfo) {
-//           setUserInfo(JSON.parse(storedInfo));
-//         }
-//       } catch (err) {
-//         console.log('Error loading user info:', err);
-//       }
-//     };
-//     loadAvatar();
-//   }, []);
-
-//   // Save updated avatar or user info to AsyncStorage
-//   const saveUserInfo = async (newInfo: any) => {
-//     try {
-//       setUserInfo(newInfo);
-//       await AsyncStorage.setItem('userInfo', JSON.stringify(newInfo));
-//     } catch (err) {
-//       console.log('Error saving user info:', err);
-//     }
-//   };
-
-//   // Pick image from gallery
-//   const pickImage = () => {
-//     ImagePicker.launchImageLibrary(
-//       {
-//         mediaType: 'photo',
-//         maxWidth: 300,
-//         maxHeight: 300,
-//         quality: 0.7,
-//       },
-//       response => {
-//         if (response.didCancel) return;
-//         if (response.errorCode) {
-//           Alert.alert('Error', response.errorMessage || 'Failed to pick image');
-//         } else {
-//           const uri = response.assets[0].uri;
-//           const updatedInfo = { ...userInfo, avatar: uri };
-//           saveUserInfo(updatedInfo);
-//         }
-//       },
-//     );
-//   };
-
-//   const confirmLogout = async () => {
-//     try {
-//       await AsyncStorage.clear();
-//       dispatch(logout());
-//       setLogoutModalVisible(false);
-//       navigation.reset({
-//         index: 0,
-//         routes: [{ name: 'Login' }],
-//       });
-//     } catch (error) {
-//       console.error('Error during logout:', error);
-//     }
-//   };
-
-//   const handleEditProfile = () => navigation.navigate('EditProfileScreen');
-//   const handleNotifications = () => navigation.navigate('NotificationsScreen');
-//   const handleHelp = () => navigation.navigate('HelpScreen' as never);
-//   const handleTerms = () => navigation.navigate('TermsScreen' as never);
-
-//   return (
-//     <View style={styles.container}>
-//       {/* <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" /> */}
-//       <ScrollView showsVerticalScrollIndicator={false}>
-//         <Text style={styles.headerTitle}>Profile</Text>
-
-//         {/* Profile Info Section */}
-//         <View style={styles.profileSection}>
-//           <View style={styles.avatarContainer}>
-//             <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
-//             <TouchableOpacity
-//               style={styles.editAvatarButton}
-//               onPress={pickImage}
-//               activeOpacity={0.8}
-//             >
-//               <Icon name="edit" size={16} color="#FFFFFF" />
-//             </TouchableOpacity>
-//           </View>
-//           <Text style={styles.userName}>{userInfo.name}</Text>
-//           <Text style={styles.userPhone}>{userInfo.phone}</Text>
-//         </View>
-
-//         {/* Menu Items */}
-//         <View style={styles.menuContainer}>
-//           <ProfileMenuItem
-//             icon="person-outline"
-//             title="Edit Profile"
-//             onPress={handleEditProfile}
-//           />
-//           <ProfileMenuItem
-//             icon="notifications-none"
-//             title="Notifications"
-//             onPress={handleNotifications}
-//           />
-//           <ProfileMenuItem
-//             icon="help-outline"
-//             title="Help and Support"
-//             onPress={handleHelp}
-//           />
-//           <ProfileMenuItem
-//             icon="description"
-//             title="Terms and Conditions"
-//             onPress={handleTerms}
-//           />
-//           <ProfileMenuItem
-//             icon="logout"
-//             title="Log Out"
-//             onPress={() => setLogoutModalVisible(true)}
-//             showArrow={false}
-//           />
-//         </View>
-//       </ScrollView>
-
-//       {/* Logout Modal */}
-//       <Modal
-//         transparent
-//         visible={logoutModalVisible}
-//         animationType="fade"
-//         onRequestClose={() => setLogoutModalVisible(false)}
-//       >
-//         <View style={styles.modalOverlay}>
-//           <View style={styles.modalContent}>
-//             <Text style={styles.modalTitle}>Log Out</Text>
-//             <Text style={styles.modalMessage}>
-//               Are you sure you want to log out?
-//             </Text>
-//             <View style={styles.modalButtons}>
-//               <TouchableOpacity
-//                 style={[styles.modalButton, styles.cancelButton]}
-//                 onPress={() => setLogoutModalVisible(false)}
-//                 activeOpacity={0.8}
-//               >
-//                 <Text style={styles.cancelText}>Cancel</Text>
-//               </TouchableOpacity>
-//               <TouchableOpacity
-//                 style={[styles.modalButton, styles.logoutButton]}
-//                 onPress={confirmLogout}
-//                 activeOpacity={0.8}
-//               >
-//                 <Text style={styles.logoutText}>Yes, Logout</Text>
-//               </TouchableOpacity>
-//             </View>
-//           </View>
-//         </View>
-//       </Modal>
-//     </View>
-//   );
-// };
-
-// const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
-//   <TouchableOpacity
-//     style={styles.menuItem}
-//     onPress={onPress}
-//     activeOpacity={0.7}
-//   >
-//     <View style={styles.menuItemLeft}>
-//       <View style={styles.iconContainer}>
-//         <Icon name={icon} size={24} color={Colors.darkBlueP1 || '#2E3A59'} />
-//       </View>
-//       <Text style={styles.menuItemText}>{title}</Text>
-//     </View>
-//     {showArrow && <Icon name="chevron-right" size={24} color="#C7C7CC" />}
-//   </TouchableOpacity>
-// );
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#FFFFFF' },
-//   headerTitle: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//     textAlign: 'center',
-//     marginTop: 25,
-//     marginBottom: 30,
-//     color: '#1C1C1E',
-//   },
-//   profileSection: {
-//     alignItems: 'center',
-//     marginBottom: 40,
-//     paddingHorizontal: 20,
-//   },
-//   avatarContainer: { position: 'relative', marginBottom: 20 },
-//   avatar: {
-//     width: 140,
-//     height: 140,
-//     borderRadius: 100,
-//     backgroundColor: '#F2F2F7',
-//   },
-//   editAvatarButton: {
-//     position: 'absolute',
-//     bottom: 5,
-//     right: 5,
-//     width: 32,
-//     height: 32,
-//     borderRadius: 16,
-//     backgroundColor: '#2E3A59',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderWidth: 3,
-//     borderColor: '#FFFFFF',
-//   },
-//   userName: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//     color: '#1C1C1E',
-//     marginBottom: 8,
-//   },
-//   userPhone: { fontSize: 16, color: '#8E8E93', fontWeight: '400' },
-//   menuContainer: { paddingHorizontal: 20 },
-//   menuItem: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     paddingVertical: 16,
-//     borderBottomWidth: 0.5,
-//     borderBottomColor: '#E5E5EA',
-//   },
-//   menuItemLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-//   iconContainer: { marginRight: 16, width: 24, alignItems: 'center' },
-//   menuItemText: { fontSize: 17, color: '#1C1C1E', fontWeight: '400' },
-//   modalOverlay: {
-//     flex: 1,
-//     backgroundColor: 'rgba(0,0,0,0.4)',
-//     justifyContent: 'flex-end',
-//   },
-//   modalContent: {
-//     backgroundColor: '#FFF',
-//     borderTopLeftRadius: 30,
-//     borderTopRightRadius: 30,
-//     padding: 24,
-//     paddingBottom: 15,
-//   },
-//   modalTitle: {
-//     fontSize: 20,
-//     fontWeight: '700',
-//     marginBottom: 8,
-//     color: '#1C1C1E',
-//     textAlign: 'center',
-//   },
-//   modalMessage: {
-//     fontSize: 16,
-//     color: '#555',
-//     marginBottom: 24,
-//     textAlign: 'center',
-//   },
-//   modalButtons: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     marginTop: 10,
-//   },
-//   modalButton: {
-//     flex: 1,
-//     paddingVertical: 12,
-//     borderRadius: 30,
-//     marginHorizontal: 8,
-//     height: 45,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   cancelButton: { backgroundColor: '#F2F2F7' },
-//   logoutButton: { backgroundColor: Colors.bg_black },
-//   cancelText: { fontSize: 16, fontWeight: '600', color: '#333' },
-//   logoutText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
-// });
-
-// export default ProfileScreen;
-
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -316,181 +8,168 @@ import {
   ScrollView,
   Modal,
   Alert,
-  BackHandler,
+  ActivityIndicator
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logout } from '../store/authSlice';
 import Colors from '../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import * as ImagePicker from 'react-native-image-picker';
 import { AuthStackRoutes } from '../navigation/Routes';
+import axios from 'axios';
+import { API_BASE } from '../constants/Constant';
+
+const DATA_EXPIRY = 6 * 60 * 60 * 1000; // 6 hours
 
 const ProfileScreen: React.FC<any> = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const user = useAppSelector(s => s.auth.user);
+
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    name: user?.name || 'Daniel Martinez',
-    phone: user?.phone || '+123 856479683',
-    avatar:
-      user?.avatar ||
-      'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+    name: user?.name || 'Loading...',
+    phone: user?.phone || '',
+    avatar: user?.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
   });
 
-  // 🔄 Load avatar + details whenever screen is focused
-  useFocusEffect(
-    React.useCallback(() => {
-      const loadAvatar = async () => {
-        try {
-          const storedInfo = await AsyncStorage.getItem('userInfo');
-          if (storedInfo) {
-            setUserInfo(JSON.parse(storedInfo));
-          }
-        } catch (err) {
-          console.log('Error loading user info:', err);
-        }
-      };
-      loadAvatar();
-    }, [])
-  );
+  // ------------------ LOAD PROFILE WITH LIMIT ------------------
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("userInfo");
+        const lastFetch = await AsyncStorage.getItem("lastProfileFetch");
 
-  // Save updated avatar or user info to AsyncStorage
-  const saveUserInfo = async (newInfo: any) => {
+        if (storedUser) setUserInfo(JSON.parse(storedUser));
+
+        if (lastFetch && (Date.now() - Number(lastFetch) < DATA_EXPIRY)) {
+          setLoading(false);
+          return;
+        }
+
+        await fetchProfileFromServer();
+      } catch (err) {
+        console.log("Profile fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  // ------------------ API CALL FUNCTION ------------------
+  const fetchProfileFromServer = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) return;
+
+    const res = await axios.get(`${API_BASE}/api/users/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const freshUser = res.data.data;
+    setUserInfo(freshUser);
+
+    await AsyncStorage.setItem("userInfo", JSON.stringify(freshUser));
+    await AsyncStorage.setItem("lastProfileFetch", Date.now().toString());
+  };
+
+  // ------------------ REFRESH BUTTON ACTION ------------------
+  const refreshProfile = async () => {
+    const lastFetch = await AsyncStorage.getItem("lastProfileFetch");
+
+    setRefreshing(true);
+
+    // Inside time window → Dummy refresh
+    if (lastFetch && Date.now() - Number(lastFetch) < DATA_EXPIRY) {
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 1800);
+      return;
+    }
+
+    // Real refresh
     try {
-      setUserInfo(newInfo);
-      await AsyncStorage.setItem('userInfo', JSON.stringify(newInfo));
+      await fetchProfileFromServer();
+      Alert.alert("Updated 🎉", "Your profile has been refreshed successfully.");
     } catch (err) {
-      console.log('Error saving user info:', err);
+      console.log("Refresh Error:", err);
+    } finally {
+      setRefreshing(false);
     }
   };
 
-  // Pick image from gallery
-  const pickImage = () => {
-    ImagePicker.launchImageLibrary(
-      {
-        mediaType: 'photo',
-        maxWidth: 300,
-        maxHeight: 300,
-        quality: 0.7,
-      },
-      response => {
-        if (response.didCancel) return;
-        if (response.errorCode) {
-          Alert.alert('Error', response.errorMessage || 'Failed to pick image');
-        } else {
-          const uri = response.assets?.[0]?.uri;
-          if (uri) {
-            const updatedInfo = { ...userInfo, avatar: uri };
-            saveUserInfo(updatedInfo);
-          }
-        }
-      },
-    );
-  };
-
+  // ------------------ LOGOUT ------------------
   const confirmLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      dispatch(logout());
-      setLogoutModalVisible(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: AuthStackRoutes.Login }],
-      });
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
+    await AsyncStorage.clear();
+    dispatch(logout());
+    navigation.reset({
+      index: 0,
+      routes: [{ name: AuthStackRoutes.Login }],
+    });
   };
-
-  const handleEditProfile = () => navigation.navigate(AuthStackRoutes.EditProfileScreen);
-  const handleNotifications = () => navigation.navigate(AuthStackRoutes.NotificationsScreen);
-  const handleHelp = () => navigation.navigate(AuthStackRoutes.HelpScreen as never);
-  const handleTerms = () => navigation.navigate(AuthStackRoutes.TermsScreen as never);
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.headerTitle}>
-        {/* <Text style={styles.headerTitle}>Profile</Text> */}
 
-        {/* Profile Info Section */}
+        {/* Profile Section */}
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
             <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
             <TouchableOpacity
               style={styles.editAvatarButton}
-              // onPress={pickImage}
-              activeOpacity={1}
+              onPress={() => navigation.navigate(AuthStackRoutes.EditProfileScreen)}
+              activeOpacity={0.7}
             >
               <Icon name="edit" size={16} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
+
           <Text style={styles.userName}>{userInfo.name}</Text>
-          <Text style={styles.userPhone}>{userInfo.phone}</Text>
+
+          {/* REFRESH BUTTON - UI SAME BUT ANIMATED */}
+          <TouchableOpacity onPress={refreshProfile} style={{ marginTop: 10 }} disabled={refreshing}>
+            {refreshing ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <ActivityIndicator size="small" color={Colors.darkBlueP1} style={{ marginRight: 6 }} />
+                <Text style={{ color: Colors.darkBlueP1 }}>Refreshing...</Text>
+              </View>
+            ) : (
+              <Text style={{ color: Colors.darkBlueP1 }}>Refresh Profile ⟳</Text>
+            )}
+          </TouchableOpacity>
         </View>
 
-        {/* Menu Items */}
+        {/* Menu */}
         <View style={styles.menuContainer}>
-          <ProfileMenuItem
-            icon="person-outline"
-            title="Edit Profile"
-            onPress={handleEditProfile}
-          />
-          <ProfileMenuItem
-            icon="notifications-none"
-            title="Notifications"
-            onPress={handleNotifications}
-          />
-          <ProfileMenuItem
-            icon="help-outline"
-            title="Subscription and features"
-            onPress={handleHelp}
-          />
-          <ProfileMenuItem
-            icon="description"
-            title="Terms and Conditions"
-            onPress={handleTerms}
-          />
-          <ProfileMenuItem
-            icon="logout"
-            title="Log Out"
-            onPress={() => setLogoutModalVisible(true)}
-            showArrow={false}
-          />
+          <ProfileMenuItem icon="person-outline" title="Edit Profile" onPress={() => navigation.navigate(AuthStackRoutes.EditProfileScreen)} />
+          <ProfileMenuItem icon="notifications-none" title="Notifications" onPress={() => navigation.navigate(AuthStackRoutes.NotificationsScreen)} />
+          <ProfileMenuItem icon="help-outline" title="Subscription and features" onPress={() => navigation.navigate(AuthStackRoutes.HelpScreen as never)} />
+          <ProfileMenuItem icon="description" title="Terms and Conditions" onPress={() => navigation.navigate(AuthStackRoutes.TermsScreen as never)} />
+          <ProfileMenuItem icon="logout" title="Log Out" showArrow={false} onPress={() => setLogoutModalVisible(true)} />
         </View>
       </ScrollView>
 
       {/* Logout Modal */}
-      <Modal
-        transparent
-        visible={logoutModalVisible}
-        animationType="fade"
-        onRequestClose={() => setLogoutModalVisible(false)}
-      >
+      <Modal transparent visible={logoutModalVisible} animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Log Out</Text>
-            <Text style={styles.modalMessage}>
-              Are you sure you want to log out?
-            </Text>
+            <Text style={styles.modalMessage}>Are you sure you want to log out?</Text>
+
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setLogoutModalVisible(false)}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity style={[styles.modalButton, styles.cancelButton]} onPress={() => setLogoutModalVisible(false)}>
                 <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.logoutButton]}
-                onPress={confirmLogout}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity style={[styles.modalButton, styles.logoutButton]} onPress={confirmLogout}>
                 <Text style={styles.logoutText}>Yes, Logout</Text>
               </TouchableOpacity>
             </View>
+
           </View>
         </View>
       </Modal>
@@ -499,11 +178,7 @@ const ProfileScreen: React.FC<any> = () => {
 };
 
 const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
-  <TouchableOpacity
-    style={styles.menuItem}
-    onPress={onPress}
-    activeOpacity={0.7}
-  >
+  <TouchableOpacity style={styles.menuItem} onPress={onPress} activeOpacity={0.4}>
     <View style={styles.menuItemLeft}>
       <View style={styles.iconContainer}>
         <Icon name={icon} size={24} color={Colors.darkBlueP1 || '#2E3A59'} />
@@ -514,105 +189,40 @@ const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
   </TouchableOpacity>
 );
 
+// ------------------ STYLES (UNCHANGED) ------------------
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
-  headerTitle: {
-    // fontSize: 24,
-    // fontWeight: '600',
-    // textAlign: 'center',
-    marginTop: 25,
-    // marginBottom: 30,
-    // color: '#1C1C1E',
-  },
-  profileSection: {
-    alignItems: 'center',
-    marginBottom: 40,
-    paddingHorizontal: 20,
-  },
-  avatarContainer: { position: 'relative', marginBottom: 20,borderWidth:2,borderColor:Colors.darkBlueP1,borderRadius:80,padding:2 },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 100,
-    backgroundColor: '#F2F2F7',
-  },
+  headerTitle: { marginTop: 25 },
+  profileSection: { alignItems: 'center', marginBottom: 40 },
+  avatarContainer: { position: 'relative', marginBottom: 20, borderWidth:2, borderColor:Colors.darkBlueP1, borderRadius:80, padding:2 },
+  avatar: { width: 120, height: 120, borderRadius: 100 },
   editAvatarButton: {
-    position: 'absolute',
-    bottom: 5,
-    right: 5,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#2E3A59',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
+    position: 'absolute', bottom: 5, right: 5, width: 32, height: 32, borderRadius: 16,
+    backgroundColor: '#2E3A59', justifyContent: 'center', alignItems: 'center',
+    borderWidth: 3, borderColor: '#FFFFFF',
   },
-  userName: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  userPhone: { fontSize: 16, color: '#8E8E93', fontWeight: '400' },
+  userName: { fontSize: 24, fontWeight: '600', color: '#1C1C1E', marginBottom: 8 },
   menuContainer: { paddingHorizontal: 20 },
   menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#E5E5EA',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 16, borderBottomWidth: 0.5, borderBottomColor: '#E5E5EA',
   },
-  menuItemLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  iconContainer: { marginRight: 16, width: 24, alignItems: 'center' },
-  menuItemText: { fontSize: 17, color: '#1C1C1E', fontWeight: '400' },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
+  menuItemLeft: { flexDirection: 'row', alignItems: 'center' },
+  iconContainer: { marginRight: 16 },
+  menuItemText: { fontSize: 17 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalContent: {
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    backgroundColor: '#FFF', borderTopLeftRadius: 30, borderTopRightRadius: 30,
     padding: 24,
-    paddingBottom: 15,
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 8,
-    color: '#1C1C1E',
-    textAlign: 'center',
-  },
-  modalMessage: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 30,
-    marginHorizontal: 8,
-    height: 45,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  modalTitle: { fontSize: 20, textAlign: 'center', fontWeight: '700' },
+  modalMessage: { textAlign: 'center', marginBottom: 25 },
+  modalButtons: { flexDirection: 'row', justifyContent: 'space-between' },
+  modalButton: { flex: 1, padding: 12, borderRadius: 30, marginHorizontal: 8 },
   cancelButton: { backgroundColor: '#F2F2F7' },
   logoutButton: { backgroundColor: Colors.bg_black },
-  cancelText: { fontSize: 16, fontWeight: '600', color: '#333' },
-  logoutText: { fontSize: 16, fontWeight: '600', color: '#FFF' },
+  cancelText: { textAlign: 'center' },
+  logoutText: { textAlign: 'center', color: '#FFF' },
 });
 
 export default ProfileScreen;
-

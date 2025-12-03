@@ -25,58 +25,60 @@ const DailyJournalScreen = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const [text, setText] = useState('');
 
-  // Load local entries (offline support)
+  // Load entries (Only fetch if local data does NOT exist)
   useEffect(() => {
     const loadEntries = async () => {
       const data = await AsyncStorage.getItem('journalEntries');
+
       if (data) {
         const parsed = JSON.parse(data);
         setEntries(parsed);
-        if (parsed[today]) {
-          setText(parsed[today]);
-        }
+
+        if (parsed[today]) setText(parsed[today]);
+
+        // 🔥 Stop here if local data exists
+        return;
       }
 
-      // Fetch from backend (sync)
+      // 🟢 Only fetch if no local data is found
       fetchEntriesFromBackend();
     };
+
     loadEntries();
   }, []);
 
   const fetchEntriesFromBackend = async () => {
     try {
-      const token = await AsyncStorage.getItem('token'); // from login
+      const token = await AsyncStorage.getItem('token'); 
       const res = await axios.get(`${API_BASE_URL}/my-journals`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.data.success) {
         const backendEntries: { [key: string]: string } = {};
+
         res.data.data.forEach((item: any) => {
           const date = new Date(item.date).toISOString().split('T')[0];
           backendEntries[date] = item.text;
         });
+
         setEntries(backendEntries);
         await AsyncStorage.setItem('journalEntries', JSON.stringify(backendEntries));
       }
-    } catch (error) {
-      console.log('Fetch failed', error.message);
+    } catch (error: any) {
+      console.log('Fetch failed', error?.message);
     }
   };
 
   const saveEntry = async () => {
-    console.log(":::::::D:::::::::::",dummySubscription);
-    
     if (dummySubscription === 'Free') {
-      Alert.alert(
-        'Upgrade Required',
-        'Journal access is available for Tier1 and above.'
-      );
+      Alert.alert('Upgrade Required', 'Journal access is available for Tier1 and above.');
       return;
     }
 
     const targetDate = selectedDate || today;
     const newEntries = { ...entries, [targetDate]: text };
+
     setEntries(newEntries);
     await AsyncStorage.setItem('journalEntries', JSON.stringify(newEntries));
 
@@ -89,8 +91,7 @@ const DailyJournalScreen = () => {
       );
 
       Alert.alert('Saved', `Entry for ${targetDate} saved.`);
-    } catch (error: any) {
-      console.error(error);
+    } catch (error) {
       Alert.alert('Error', 'Failed to sync with server. Saved locally.');
     }
   };
@@ -98,6 +99,7 @@ const DailyJournalScreen = () => {
   const deleteEntry = async (date: string) => {
     const newEntries = { ...entries };
     delete newEntries[date];
+
     setEntries(newEntries);
     await AsyncStorage.setItem('journalEntries', JSON.stringify(newEntries));
 
@@ -106,9 +108,10 @@ const DailyJournalScreen = () => {
       await axios.delete(`${API_BASE_URL}/${date}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       Alert.alert('Deleted', `Entry for ${date} deleted.`);
     } catch (error) {
-      console.log('Delete failed', error.message);
+      console.log('Delete failed', error?.message);
     }
 
     if (date === selectedDate) {
@@ -118,8 +121,7 @@ const DailyJournalScreen = () => {
   };
 
   const sortedEntries = Object.entries(entries).sort(
-    ([dateA], [dateB]) =>
-      new Date(dateA).getTime() - new Date(dateB).getTime()
+    ([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime()
   );
 
   return (
@@ -143,19 +145,13 @@ const DailyJournalScreen = () => {
         onPress={saveEntry}
         disabled={!text.trim()}
       >
-        <Text
-          style={{
-            color: '#fff',
-            textAlign: 'center',
-            borderRadius: 5,
-            fontWeight: 'bold',
-          }}
-        >
+        <Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>
           {entries[selectedDate] ? 'Update Entry' : 'Save Entry'}
         </Text>
       </TouchableOpacity>
 
       <Text style={styles.listHeader}>Your Journal Entries</Text>
+
       {sortedEntries.length === 0 ? (
         <Text style={styles.emptyText}>No entries yet.</Text>
       ) : (
