@@ -3462,7 +3462,8 @@ const DATA = [
 
   const renderItem = ({ item }: { item: any }) => (
     <Tooltip
-      isVisible={tooltipId === item._id}
+      isVisible={tooltipId === item.id}
+      // isVisible={tooltipId === item._id}
       content={<Text style={{ color: "#000000ff" }}>{`Learn more about ${item.title}`}</Text>}
       placement="top"
       onClose={() => setTooltipId(null)}
@@ -3472,7 +3473,8 @@ const DATA = [
       <TouchableOpacity
         style={styles.cardWrapper}
         onPress={() => handlePress(item)}
-        onLongPress={() => setTooltipId(item._id)}
+        onLongPress={() => setTooltipId(item.id)}
+        // onLongPress={() => setTooltipId(item._id)}
         delayLongPress={300}
         activeOpacity={0.8}
       >

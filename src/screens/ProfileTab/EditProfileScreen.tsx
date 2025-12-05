@@ -773,11 +773,20 @@ const EditProfileScreen: React.FC = () => {
   const user = useAppSelector(state => state.auth.user);
   const dispatch = useAppDispatch();
 
+
   const getValidAvatar = (url: string) => {
-    if (!url) return 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
-    url = url.replace('undefined', '').replace(/([^:]\/)\/+/g, '$1');
-    return url.startsWith("http") ? url : `${API_BASE}${url}`;
-  };
+  if (!url) return 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+
+  // If it's a local image path, return directly
+  if (url.startsWith("file") || url.startsWith("content")) return url;
+
+  // Always convert any full URL -> relative path first
+  const cleanPath = url.replace(/^https?:\/\/[^/]+/, "");
+
+  // Then prepend base URL dynamically
+  return `${API_BASE}${cleanPath}`;
+};
+
 
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -950,12 +959,16 @@ const handleSave = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
+    
 
-    const updatedUser = res.data.data;
-    updatedUser.avatar = getValidAvatar(updatedUser.avatar);
+const updatedUser = res.data.data;
 
-    dispatch(updateProfile(updatedUser));
-    await AsyncStorage.setItem("userInfo", JSON.stringify(updatedUser));
+// always convert to relative path before saving locally
+updatedUser.avatar = updatedUser.avatar.replace(/^https?:\/\/[^/]+/, "");
+
+await AsyncStorage.setItem("userInfo", JSON.stringify(updatedUser));
+setAvatar(getValidAvatar(updatedUser.avatar));
+
     await AsyncStorage.setItem("profile_last_update", Date.now().toString());
 
     Toast.show({ type: "success", text1: "Profile updated successfully!" });

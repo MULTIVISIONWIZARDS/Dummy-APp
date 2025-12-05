@@ -1859,7 +1859,7 @@ useEffect(() => {
             <Text style={s.waiting}>⏳ Waiting for approval...</Text>
           )}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[s.btn, {backgroundColor: '#ef4444', marginTop: 8}]}
             onPress={async () => {
               setMeeting(null);
@@ -1871,7 +1871,7 @@ useEffect(() => {
               setModalVisible(true);
             }}>
             <Text style={s.btnTxt}>Cancel Consultation</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
 

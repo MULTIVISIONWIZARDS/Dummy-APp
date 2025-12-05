@@ -121,6 +121,7 @@ import PaymentSuccessScreen from '../screens/PaymentSuccessScreen';
 import ConsultScreen from '../screens/ConsultScreen';
 import VideoMeetingScreen from '../components/BookinMeet/VideoMeetingScreen';
 import SubscriptionDetailsScreen from '../screens/SubscriptionDetails';
+import ExtraFeeScreen from '../screens/ExtraFeeScreen';
 
 // ----------------------
 // 1️⃣ Route Types
@@ -157,7 +158,8 @@ export const AuthStackRoutes = {
   PaymentSuccess: 'PaymentSuccess',
   VideoMeeting: 'Video',
   SubscriptionDetails: 'SubscriptionDetails',
-  Main:"Main"
+  Main:"Main",
+  ExtraFee:"ExtraFee"
 } as const;
 
 export const MainTabRoutes = {
@@ -189,6 +191,7 @@ export const authRoutes: RouteConfig<keyof typeof AuthStackRoutes>[] = [
   { name: AuthStackRoutes.PaymentSuccess, component: PaymentSuccessScreen, options: { headerShown: false } },
   { name: AuthStackRoutes.VideoMeeting, component: VideoMeetingScreen, options: { headerShown: false } },
   { name: AuthStackRoutes.SubscriptionDetails, component: SubscriptionDetailsScreen, options: { headerShown: true } },
+  { name: AuthStackRoutes.ExtraFee, component: ExtraFeeScreen, options: { headerShown: false } },
 ];
 
 // ----------------------

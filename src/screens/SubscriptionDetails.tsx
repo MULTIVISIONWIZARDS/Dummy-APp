@@ -377,6 +377,7 @@ import {
   LayoutAnimation,
   UIManager,
   Platform,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -393,7 +394,8 @@ if (Platform.OS === "android") {
 export default function SubscriptionDetailsScreen() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { plan, isYearly, userId } = route.params as {
+  const { plan, isYearly, userId , extraAmount,
+        totalAmount,extraAmountT} = route.params as {
     plan: {
       id: string;
       name: string;
@@ -409,6 +411,8 @@ export default function SubscriptionDetailsScreen() {
     };
     isYearly: boolean;
     userId: string;
+    extraAmount:string,
+        finalPrice:string
   };
 
   const extraBenefits = plan.extraBenefits || [];
@@ -514,6 +518,53 @@ export default function SubscriptionDetailsScreen() {
               );
             })}
           </View>
+           <View style={styles.divider} />
+         <View style={{ marginBottom: 15 }}>
+  <Text style={styles.sectionTitle}>Price Breakdown:</Text>
+
+  <View style={styles.row}>
+    <Text style={styles.breakdownLabel}>Plan Price:</Text>
+    <Text style={styles.breakdownValue}>${isYearly ? plan.yearlyPrice : plan.price}</Text>
+  </View>
+
+<View style={styles.row}>
+  {/* Left side: Label + Icon inline */}
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <Text style={styles.breakdownLabel}>Extra Fee</Text>
+
+   <TouchableOpacity
+  style={{ marginLeft: 6 }}
+  activeOpacity={0.7}
+  onPress={() =>
+    Alert.alert(
+      "Why Extra Fee?",
+      extraAmountT?.trim() || "This fee includes additional video consultation , telemedicine call."
+    )
+  }
+>
+
+      <Icon name="info-outline" size={18} color="#6B7280" />
+    </TouchableOpacity>
+  </View>
+
+  {/* Right side: Value */}
+  <Text style={styles.breakdownValue}>${extraAmount ?? 0}</Text>
+</View>
+
+
+
+
+
+  <View style={styles.divider} />
+
+  <View style={styles.row}>
+    <Text style={[styles.breakdownLabel, { fontWeight: "bold", fontSize: 18 }]}>Total:</Text>
+    <Text style={[styles.breakdownValue, { fontWeight: "bold", fontSize: 18, color: "#10B981" }]}>
+      ${totalAmount} {plan.price+extraAmount}  
+       {/* ${totalAmount}  */}
+    </Text>
+  </View>
+</View>
 
           {/* Subscribe Button */}
           <TouchableOpacity
@@ -561,7 +612,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#111827",
     marginBottom: 10,
-  },
+  },row: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 6,
+},
+
+breakdownLabel: {
+  fontSize: 16,
+  color: "#374151",
+},
+
+breakdownValue: {
+  fontSize: 16,
+  color: "#111827",
+},
+
+divider: {
+  height: 1,
+  backgroundColor: "#E5E7EB",
+  marginVertical: 8,
+},
+
   description: {
     fontSize: 16,
     color: "#6B7280",

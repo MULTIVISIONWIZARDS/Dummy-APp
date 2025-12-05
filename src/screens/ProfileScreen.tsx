@@ -30,22 +30,43 @@ const ProfileScreen: React.FC<any> = () => {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
   const [userInfo, setUserInfo] = useState({
     name: user?.name || 'Loading...',
     phone: user?.phone || '',
     avatar: user?.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
   });
 
-  // ------------------ LOAD PROFILE WITH LIMIT ------------------
+  // ⭐ Function to format avatar properly
+  const formatAvatar = (url: string) => {
+    if (!url) return 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+
+    // Local photo
+    if (url.startsWith("file") || url.startsWith("content")) return url;
+
+    // Remove any old IP/domain → convert to relative
+    const cleanPath = url.replace(/^https?:\/\/[^/]+/, "");
+
+    // Add correct base URL
+    return `${API_BASE}${cleanPath}`;
+  };
+
+  // ------------------ LOAD PROFILE ------------------
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const storedUser = await AsyncStorage.getItem("userInfo");
         const lastFetch = await AsyncStorage.getItem("lastProfileFetch");
 
-        if (storedUser) setUserInfo(JSON.parse(storedUser));
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          setUserInfo({
+            ...parsed,
+            avatar: formatAvatar(parsed.avatar)
+          });
+        }
 
-        if (lastFetch && (Date.now() - Number(lastFetch) < DATA_EXPIRY)) {
+        if (lastFetch && Date.now() - Number(lastFetch) < DATA_EXPIRY) {
           setLoading(false);
           return;
         }
@@ -61,7 +82,7 @@ const ProfileScreen: React.FC<any> = () => {
     loadProfile();
   }, []);
 
-  // ------------------ API CALL FUNCTION ------------------
+  // ------------------ API CALL ------------------
   const fetchProfileFromServer = async () => {
     const token = await AsyncStorage.getItem("token");
     if (!token) return;
@@ -71,27 +92,29 @@ const ProfileScreen: React.FC<any> = () => {
     });
 
     const freshUser = res.data.data;
-    setUserInfo(freshUser);
 
-    await AsyncStorage.setItem("userInfo", JSON.stringify(freshUser));
+    const updated = {
+      ...freshUser,
+      avatar: formatAvatar(freshUser.avatar)
+    };
+
+    setUserInfo(updated);
+
+    await AsyncStorage.setItem("userInfo", JSON.stringify(updated));
     await AsyncStorage.setItem("lastProfileFetch", Date.now().toString());
   };
 
-  // ------------------ REFRESH BUTTON ACTION ------------------
+  // ------------------ MANUAL REFRESH ------------------
   const refreshProfile = async () => {
     const lastFetch = await AsyncStorage.getItem("lastProfileFetch");
 
     setRefreshing(true);
 
-    // Inside time window → Dummy refresh
     if (lastFetch && Date.now() - Number(lastFetch) < DATA_EXPIRY) {
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1800);
+      setTimeout(() => setRefreshing(false), 1500);
       return;
     }
 
-    // Real refresh
     try {
       await fetchProfileFromServer();
       Alert.alert("Updated 🎉", "Your profile has been refreshed successfully.");
@@ -131,7 +154,7 @@ const ProfileScreen: React.FC<any> = () => {
 
           <Text style={styles.userName}>{userInfo.name}</Text>
 
-          {/* REFRESH BUTTON - UI SAME BUT ANIMATED */}
+          {/* Refresh */}
           <TouchableOpacity onPress={refreshProfile} style={{ marginTop: 10 }} disabled={refreshing}>
             {refreshing ? (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -180,7 +203,7 @@ const ProfileScreen: React.FC<any> = () => {
 const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
   <TouchableOpacity style={styles.menuItem} onPress={onPress} activeOpacity={0.4}>
     <View style={styles.menuItemLeft}>
-      <View style={styles.iconContainer}>
+      <View className={styles.iconContainer}>
         <Icon name={icon} size={24} color={Colors.darkBlueP1 || '#2E3A59'} />
       </View>
       <Text style={styles.menuItemText}>{title}</Text>
@@ -189,12 +212,15 @@ const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
   </TouchableOpacity>
 );
 
-// ------------------ STYLES (UNCHANGED) ------------------
+// ------------------ STYLES ------------------
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
   headerTitle: { marginTop: 25 },
   profileSection: { alignItems: 'center', marginBottom: 40 },
-  avatarContainer: { position: 'relative', marginBottom: 20, borderWidth:2, borderColor:Colors.darkBlueP1, borderRadius:80, padding:2 },
+  avatarContainer: {
+    position: 'relative', marginBottom: 20, borderWidth:2,
+    borderColor:Colors.darkBlueP1, borderRadius:80, padding:2
+  },
   avatar: { width: 120, height: 120, borderRadius: 100 },
   editAvatarButton: {
     position: 'absolute', bottom: 5, right: 5, width: 32, height: 32, borderRadius: 16,

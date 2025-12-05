@@ -150,7 +150,218 @@
 
 // export default HomeScreen;
 
+//add extra 
 
+
+
+
+// import React, { useEffect, useState, useCallback } from "react";
+// import {
+//   View,
+//   StyleSheet,
+//   ScrollView,
+//   TouchableOpacity,
+//   Dimensions,
+// } from "react-native";
+// import { SafeAreaView } from "react-native-safe-area-context";
+// import Icon from "react-native-vector-icons/Ionicons";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { useFocusEffect, useNavigation } from "@react-navigation/native";
+
+// import Footer from "../components/Footer";
+// import BannerCarousel from "../components/Banner/BannerCarousel";
+// import BrandHeader from "../components/BrandHeader/BrandHeader";
+// import CategoryGrid from "../components/CategoryGrid/CategoryGrid";
+// import WellnessShowcase from "../components/WellnessShowcase";
+// import SubscriptionScreen from "./SubscriptionScreen";
+// import Colors from "../constants/Colors";
+// import MoodTracker from "../components/MoodTracker";
+// import Greeting from "../components/Greeting";
+// import BookMeetingScreen from "../components/BookinMeet/BookMeetingScreen";
+// import { useAppSelector } from "../store/hooks";
+// import CommonSubscription from "../components/CommonSubscription";
+// import { AuthStackRoutes, MainTabRoutes } from "../navigation/Routes";
+// import VideoCarousel from "../components/VideoPlayer";
+// import { LogBox } from 'react-native';
+// import PatientTestimonial from "./PatientTestimonial";
+// import { checkExtraFeeStatus } from '../utils/extraFeeService'
+// LogBox.ignoreLogs(['Text strings must be rendered within a <Text> component']);
+
+// const CHAT_STORAGE_KEY = "user_chat_messages";
+
+// const HomeScreen: React.FC<any> = () => {
+//   const [chatCount, setChatCount] = useState(0);
+//   const [hasSubscription, setHasSubscription] = useState(false);
+//   const user = useAppSelector((state) => state.auth.user);
+//   const navigation = useNavigation();
+
+//   // 🔹 load subscription
+//   const checkSubscription = async () => {
+//     try {
+//       const data = await AsyncStorage.getItem("subscriptionDetails");
+//       if (data) {
+//         const subscription = JSON.parse(data);
+//         const now = new Date();
+//         const expiry = new Date(subscription.expiryDate);
+//         if (expiry > now) {
+//           setHasSubscription(true);
+//         } else {
+//           setHasSubscription(false);
+//         }
+//       }
+//     } catch (e) {
+//       console.log("Error loading subscription:", e);
+//     }
+//   };
+
+//   // 🔹 load chat count
+//   const loadChatCount = async () => {
+//     try {
+//       const savedChat = await AsyncStorage.getItem(CHAT_STORAGE_KEY);
+//       if (savedChat) {
+//         const parsed = JSON.parse(savedChat);
+//         setChatCount(parsed.length);
+//       } else {
+//         setChatCount(0);
+//       }
+//     } catch (e) {
+//       console.log("Error loading chat count:", e);
+//     }
+//   };
+
+//   // 🔹 refresh whenever screen is focused
+//   useFocusEffect(
+//     useCallback(() => {
+//       checkSubscription();
+//       loadChatCount();
+//     }, [])
+//   );
+// const banner = [
+//   { 
+//     id: 1, 
+//     videoUri: "https://videos.pexels.com/video-files/33818382/14352759_2560_1440_60fps.mp4", 
+//     title: "Daily Nutrition Tips" 
+//   },
+//   { 
+//     id: 2, 
+//     videoUri: "https://www.pexels.com/download/video/4536085/", 
+//     title: "Daily Nutrition Tips" 
+//   },
+ 
+// ];
+
+//   const [feeCheckDone, setFeeCheckDone] = useState(false);
+
+//   useFocusEffect(
+//     useCallback(() => {
+//       checkSubscription();
+//       loadChatCount();
+//      verifyFee();
+//     }, [])
+//   );
+
+//  const verifyFee = async () => {
+//    const fee = await checkExtraFeeStatus();
+//    if (fee && fee.status === "pending") {
+//      navigation.replace("ExtraFee", { fee });
+//    } else {
+//      setFeeCheckDone(true);
+//    }
+//  };
+
+//   if (!feeCheckDone) return null; // prevent flashing original UI
+
+//   return (
+//     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      
+//       <BrandHeader
+//       title ="Vintage"
+//       subtitle ="Care Rooted in Experience. Centered on You."
+//       // subtitle ="Your Health, Our Priority"
+//         onMessagePress={() => navigation.navigate(MainTabRoutes.Consults)}
+//         chatCount={chatCount}
+//       />
+
+//       <ScrollView
+//         contentContainerStyle={styles.scrollContent}
+//         showsVerticalScrollIndicator={false}
+//       >
+        
+//         <Greeting />
+
+       
+//         <VideoCarousel data={banner}/>
+//         {/* <BannerCarousel
+//           data={banners}
+//           height={180}
+//           width={Dimensions.get("window").width - 20}
+//           tickerOverlay
+//           text="🎉 Daily Wellness Update: Eat more veggies today! | Exercise: 10 push-ups | Mindfulness: 5-min break | Drink 2 liters of water"
+//           speed={60}
+//         /> */}
+//         <BookMeetingScreen />
+//         <CategoryGrid
+//           onPressItem={(item) =>
+//             navigation.navigate(AuthStackRoutes.CategoryDetail, { item })
+//           }
+//         />
+//         <MoodTracker />
+//         <WellnessShowcase />
+
+      
+//         {/* {!hasSubscription && <SubscriptionScreen />}
+//          */}
+//         {!hasSubscription && <CommonSubscription/>}
+
+//         {/* <View style={{ height: 0 }} /> */}
+//         {/* <View style={{ height: 100 }} /> */}
+//       <Footer />
+//       <PatientTestimonial/>
+//       </ScrollView>
+
+      
+//       <TouchableOpacity
+//         style={styles.floatingButtonCom}
+//         activeOpacity={0.9}
+//         onPress={() => navigation.navigate(AuthStackRoutes.Journal)}
+//       >
+//         <Icon name="book" size={24} color="#fff" />
+//       </TouchableOpacity>
+//     </SafeAreaView>
+//   ); 
+// };
+
+// const styles = StyleSheet.create({
+//   safeArea: {
+//     flex: 1,
+//     backgroundColor: "#fff",
+//   },
+//   scrollContent: {
+//     paddingBottom:0,
+//     // paddingBottom: 20,
+//   },
+//   floatingButtonCom: {
+//     position: "absolute",
+//     right: 20,
+//     bottom: 40,
+//     backgroundColor: Colors.darkBlueP1,
+//     flexDirection: "row",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     borderRadius: 30,
+//     elevation: 5,
+//     shadowColor: "#000",
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.3,
+//     shadowRadius: 3,
+//     height: 50,
+//     width: 50,
+//   },
+// });
+
+// export default HomeScreen;
+
+//add extra ebd
 
 import React, { useEffect, useState, useCallback } from "react";
 import {

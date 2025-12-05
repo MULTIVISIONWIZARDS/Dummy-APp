@@ -717,7 +717,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../utils/apiClient'; // axios instance
 
 const CommonSubscription = () => {
-  const [plansd, setPlans] = useState([]);
+  const [plasns, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -739,6 +739,7 @@ const CommonSubscription = () => {
       color: '#6B7280',
       icon: 'shield',
       paymentUrl: 'https://buy.stripe.com/test_7sY28q1YfdJf6r303e7g404',
+      extraAmount:50
     },
     {
       id: 'silver',
@@ -759,6 +760,7 @@ const CommonSubscription = () => {
       paymentUrl: 'https://buy.stripe.com/test_28EbJ0byP7kR2aNcQ07g405',
       color: '#3B82F6',
       icon: 'military-tech',
+      extraAmount:50
     },
     {
       id: 'gold',
@@ -779,6 +781,7 @@ const CommonSubscription = () => {
       ],
       color: '#dbba00ff',
       icon: 'star',
+      extraAmount:50
     },
     {
       id: 'platinum',
@@ -800,6 +803,7 @@ const CommonSubscription = () => {
       ],
       color: '#8B5CF6',
       icon: 'diamond',
+      extraAmount:50
     },
   ];
 
@@ -819,7 +823,7 @@ const CommonSubscription = () => {
       }
     };
 
-    //fetchPlans();  // disable API plans if using static
+    fetchPlans();  // disable API plans if using static
   }, []);
 
   const handleSubscribe = async (plan) => {
@@ -828,13 +832,13 @@ const CommonSubscription = () => {
 
       const added = parseFloat(extraAmount) || 0;
       const finalPrice = plan.price + added;
-
       navigation.navigate('SubscriptionDetails', {
         plan,
         isYearly: false,
         userId,
-        extraAmount: added,
-        finalPrice,
+        extraAmount: plan.extraAmount,
+        totalAmount:plan.totalAmount,
+        extraAmountT:plan.extraAmountT
       });
 
     } catch (err) {
@@ -936,29 +940,48 @@ const CommonSubscription = () => {
 
                   <Text style={styles.planDescription}>{plan.description}</Text>
                 </View>
+                 {selectedPlan === plan.id && (
+                  <TouchableOpacity
+    onPress={() =>  handleSubscribe(plans.find((p) => p.id === selectedPlan))}
+    style={{
+
+      padding: 8,
+      borderRadius: 8,
+      marginLeft: 10,
+    }}
+  >
+    <Icon name="eye" size={18} color="#374151" />
+  </TouchableOpacity>
+)}
+
               </View>
 
               {/* 🔥 OPTIONAL EXTRA AMOUNT FIELD (ONLY FOR SELECTED PLAN) */}
               {selectedPlan === plan.id && (
-                <View style={{ marginTop: 12 }}>
-                  <Text style={{ fontSize: 12, color: '#4B5563', marginBottom: 6 }}>
-                    Add extra amount (optional)
-                  </Text>
+               <View style={{ marginTop: 12 }}>
+  <Text style={{ fontSize: 12, color: '#4B5563', marginBottom: 4 }}>
+    Added Extra Amount
+  </Text>
 
-                  <TextInput
-                    style={{
-                      borderWidth: 1,
-                      borderColor: '#D1D5DB',
-                      borderRadius: 10,
-                      padding: 10,
-                      backgroundColor: '#fff',
-                    }}
-                    placeholder="$0.00"
-                    keyboardType="numeric"
-                    value={extraAmount}
-                    onChangeText={setExtraAmount}
-                  />
-                </View>
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <Text style={{ fontSize: 16, fontWeight: "600", color: "#111827"}}>
+      ${plan?.extraAmount ?? 0}
+    </Text>
+
+  </View>
+
+  <Text
+    style={{
+      fontSize: 11,
+      color: "#374151",
+      marginTop: 6,
+      lineHeight: 16,
+    }}
+  >
+    Extra amount is added based on your personalized care and additional support included with this plan.
+  </Text>
+</View>
+
               )}
             </TouchableOpacity>
           ))}
@@ -978,14 +1001,14 @@ const CommonSubscription = () => {
           <Text style={styles.subscribeText}>View Subscription</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           style={styles.unlockBtn}
           onPress={handleUnlockSubscription}
         >
           <Icon name="unlock" size={20} color="#6366F1" />
           <Text style={styles.unlockText}> Unlock with Code</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* UNLOCK MODAL */}
