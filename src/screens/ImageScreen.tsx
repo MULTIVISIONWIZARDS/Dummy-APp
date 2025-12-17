@@ -257,7 +257,7 @@ const slides = [
     id: "1",
     image: require("../assets/logo1.jpg"),
     paragraph:
-      "Subscribe to daily updates on wellness, hormone replacement and supplements. Optional consults with a real nurse practitioner of 28 years of experience to help you navigate your wellness and or hormone replacement journey.",
+      "Stay informed and empowered with daily updates covering wellness, hormone replacement, and supplement support. If you want deeper guidance, optional consults are available with a Nurse Practitioner who brings 28 years of experience and real-life understanding to help you navigate your transition, your symptoms, and your goals with clarity and confidence.",
     button: "Next",
   },
   {
@@ -269,7 +269,7 @@ const slides = [
   },
   {
     id: "3",
-  image: require("../assets/ddd1.jpg"),
+  image: require("../assets/immm.jpg"),
     paragraph: "",
     button: "Get Started",
   },
@@ -329,7 +329,7 @@ const ImageScreen = ({ navigation }) => {
         <Image
           source={item.image}
           style={[styles.image, isLast && styles.fullImage]}
-          resizeMode="cover"
+          // resizeMode="cover"
         />
 
         {!isLast && (
@@ -390,13 +390,14 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: height * 0.55,
+    // height: height * 0.55,
+    height: height * 0.45,
   },
   fullImage: {
-    height: "100%",
+    height: "100%",resizeMode:"contain"
   },
   lastSlide: {
-    backgroundColor: "#f7ecd6ff",
+    backgroundColor: "#f7ecd6ff",paddingTop:150
   },
   card: {
     width: "100%",
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 25,
     marginTop: -30,
-    minHeight: height * 0.30,
+    minHeight: height * 0.40,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -440,7 +441,7 @@ paragraph: {
     marginTop: 15,
   },
   lastButton: {
-    marginBottom: 5,
+    marginBottom: 0,
   },
   buttonText: {
     fontSize: 16,
