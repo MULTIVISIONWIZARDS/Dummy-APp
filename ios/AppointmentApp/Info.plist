@@ -2,6 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Camera -->
+<key>NSCameraUsageDescription</key>
+<string>This app needs camera access to capture images</string>
+
+<!-- Microphone -->
+<key>NSMicrophoneUsageDescription</key>
+<string>This app needs microphone access</string>
+
+<!-- Location -->
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Location is required to find nearby services</string>
+
+<!-- Photo Library (if needed) -->
+<key>NSPhotoLibraryUsageDescription</key>
+<string>This app needs access to your photos</string>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
