@@ -93,6 +93,7 @@ import Colors from '../constants/Colors';
 import useNetworkStatus from '../utils/useNetworkStatus';
 import NoInternetScreen from '../screens/NoInternetScreen';
 import CustomTabButton from '../components/TabIconTOOL';
+import { Platform } from 'react-native';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -145,9 +146,14 @@ export default function AppNavigator() {
     <SafeAreaProvider>
       <Stack.Navigator 
         initialRouteName='Splash'
-        screenOptions={{
-          headerShown: true,
-        }}
+             
+          screenOptions={{
+  headerShown: false,
+  animation: 'slide_from_right',
+  contentStyle: { backgroundColor: '#FFFFFF' },
+  gestureEnabled: true,
+  ...(Platform.OS === 'ios' && { fullScreenGestureEnabled: true }),
+}}
       >
         <Stack.Screen
           name="Splash"
