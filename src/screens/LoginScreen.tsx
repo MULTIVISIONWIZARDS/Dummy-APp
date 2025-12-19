@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     //paddingVertical: 16,
     marginBottom: 12,
   },
-  textInput: { flex: 1, fontSize: 16, color: '#111827' },
+  textInput: { flex: 1, fontSize: 16, color: '#111827',paddingVertical:Platform.OS==='ios'?14:14 },
   errorText: { color: '#ef4444', fontSize: 14, marginBottom: 2, marginLeft: 4 },
   createButton: { backgroundColor: '#1f2937', borderRadius: 16, paddingVertical: 16, alignItems: 'center', marginTop: 8 },
   createButtonDisabled: { opacity: 0.6 },
