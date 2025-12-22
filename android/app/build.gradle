@@ -3,12 +3,13 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: 'com.google.gms.google-services'
-
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
 react {
+      newArchEnabled = false   // <--- ADD THIS
+    autolinkLibrariesWithApp()
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '../..'
     // root = file("../../")
@@ -59,7 +60,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -87,7 +88,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    signingConfigs {
+      splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a"
+            universalApk false   // 🔥 avoids 300MB APK
+        }
+    }
+
+     signingConfigs {
         release {
             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
@@ -98,16 +108,17 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
-        release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
+        // debug {
+        //     signingConfig signingConfigs.debug
+        // }
+      release {
+    shrinkResources false
+    minifyEnabled false   // 🔥 THIS IS THE KEY LINE
+    signingConfig signingConfigs.release
+    
+    proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+}
+
     }
 }
 
