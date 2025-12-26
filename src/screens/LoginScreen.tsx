@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { loginUser, signupUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { AuthStackRoutes } from '../navigation/Routes';
 const AuthScreen = ({ navigation }) => {
   const dispatch=useDispatch();
@@ -42,7 +43,14 @@ const AuthScreen = ({ navigation }) => {
   
 
 
- 
+  useEffect(() => {
+    // Configure Google Sign-In only once
+  GoogleSignin.configure({
+    
+  webClientId: '361231391535-ibpuch34kqb7nc0imovbqrmminar6g2i.apps.googleusercontent.com', // from Firebase console
+   offlineAccess: true,
+});
+  }, []);
 
 
 

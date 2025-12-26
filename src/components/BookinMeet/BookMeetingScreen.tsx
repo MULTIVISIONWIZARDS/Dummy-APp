@@ -1344,17 +1344,36 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { API_BASE } from '../../constants/Constant';
 import SuccessModal from '../successModal/SuccessModal';
+import SoundPlayer from 'react-native-sound-player';
 
-// ==================== CONFIG ====================
+// // ==================== CONFIG ====================
+// const CONFIG = {
+//   BACKEND: `${API_BASE}/api/meetings`,
+//   AUTH: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZThhNjdhMDZlMmIzODE0M2IxNjM3NyIsImlhdCI6MTc2MDA5MTk5MCwiZXhwIjoxNzYwNjk2NzkwfQ.J4TCIIgZIu6q_uFIXPWH4dUMp2RTmGVF1Ni-Ze0Susk',
+//   AGORA_APP_ID: 'e7ce3caec69347b3a47deaecc69d2699',
+// };
+
+// const api = axios.create({
+//   baseURL: CONFIG.BACKEND,
+//   headers: {'Content-Type': 'application/json', Authorization: CONFIG.AUTH},
+// });
 const CONFIG = {
   BACKEND: `${API_BASE}/api/meetings`,
-  AUTH: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZThhNjdhMDZlMmIzODE0M2IxNjM3NyIsImlhdCI6MTc2MDA5MTk5MCwiZXhwIjoxNzYwNjk2NzkwfQ.J4TCIIgZIu6q_uFIXPWH4dUMp2RTmGVF1Ni-Ze0Susk',
   AGORA_APP_ID: 'e7ce3caec69347b3a47deaecc69d2699',
 };
 
+/* ==================== AXIOS INSTANCE (JWT SAFE) ==================== */
 const api = axios.create({
   baseURL: CONFIG.BACKEND,
-  headers: {'Content-Type': 'application/json', Authorization: CONFIG.AUTH},
+  headers: { 'Content-Type': 'application/json' },
+});
+
+api.interceptors.request.use(async config => {
+  const token = await AsyncStorage.getItem('authToken'); // saved on login
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // ==================== MAIN COMPONENT ====================
@@ -1587,7 +1606,22 @@ export default function App() {
     
     return () => clearInterval(interval);
   }, [meeting, accepted]);
-const checkMeetingStatus = async () => {
+  const checkMeetingStatus = async () => {
+  const { data } = await api.get(`${API_BASE}/api/meetings/status/${meeting._id}`);
+
+  if (data?.expired) {
+    await removeMeeting();
+    setMeeting(null);
+    setAccepted(false);
+
+    Alert.alert("Expired", "Consultation ended");
+    return false;
+  }
+
+  return true;
+};
+
+const checkMeetingStatus2 = async () => {
   try {
     if (!meeting?._id) return;
 
@@ -1637,13 +1671,13 @@ useEffect(() => {
 }, [meeting]);
 
   // ==================== Join Call ====================
-  const joinCall = async () => {
+  const joinCall2 = async () => {
      const valid = await checkMeetingStatus();
   if (!valid) return;
-    if (!meeting?.token || !meeting?.channelName) {
-      Alert.alert('Error', 'Meeting not ready');
-      return;
-    }
+    // if (!meeting?.token || !meeting?.channelName) {
+    //   Alert.alert('Error', 'Meeting not ready');
+    //   return;
+    // }
 
     if (!canJoinMeeting(meeting.startTime)) {
       const meetingStart = new Date(meeting.startTime);
@@ -1717,6 +1751,52 @@ useEffect(() => {
       Alert.alert('Error', 'Failed to join call');
     }
   };
+  const plsy=()=>{
+ SoundPlayer.playSoundFile("join", "mp3");
+    return
+  }
+const joinCall= async () => {
+   
+  
+  try {
+    // 1️⃣ Ask backend for token JUST-IN-TIME
+    const { data } = await api.get(`${API_BASE}/api/meetings/join/${meeting._id}`);
+
+    if (!data?.success) {
+      Alert.alert("Error", data?.message || "Unable to join");
+      return;
+    }
+
+    const { token, channelName, appId } = data;
+
+    // 2️⃣ Agora setup
+    const rtc = createAgoraRtcEngine();
+    await rtc.initialize({
+      appId,
+      channelProfile: ChannelProfileType.ChannelProfileCommunication,
+    });
+
+    rtc.registerEventHandler({
+      onJoinChannelSuccess: () => setJoined(true),
+      onUserJoined: (_, uid) => setRemoteUid(uid),
+      onUserOffline: () => setRemoteUid(0),
+      onError: (err) => console.log("Agora error:", err),
+    });
+
+    await rtc.enableVideo();
+    await rtc.startPreview();
+
+    // 3️⃣ JOIN using FRESH token
+    await rtc.joinChannel(token, channelName, 0, {
+      clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+    });
+
+    engine.current = rtc;
+    setInCall(true);
+  } catch (err) {
+    Alert.alert("Error", "Failed to join call");
+  }
+};
 
   // ==================== Leave Call ====================
   const lefaveCall = async () => {

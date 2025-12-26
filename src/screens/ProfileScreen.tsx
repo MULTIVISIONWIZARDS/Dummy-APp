@@ -126,7 +126,7 @@ const ProfileScreen: React.FC<any> = () => {
   };
 
   // ------------------ LOGOUT ------------------
-  const confirmLogout = async () => {
+  const confirmLogout2 = async () => {
     await AsyncStorage.clear();
     dispatch(logout());
     navigation.reset({
@@ -134,6 +134,50 @@ const ProfileScreen: React.FC<any> = () => {
       routes: [{ name: AuthStackRoutes.Login }],
     });
   };
+const confirmLogout = async () => {
+  try {
+    const userId = await AsyncStorage.getItem('userId');
+
+    await AsyncStorage.multiRemove([
+      // 🔑 Auth
+      'authToken',
+      'token', // remove if still used
+      'userId',
+      'userInfo',
+      'isLoggedIn',
+
+      // 💳 Subscription & payment
+      'subscriptionDetails',
+      `subscription_${userId}`,
+      'last_expanded_tier',
+      'extraFee',
+      'meeting',
+
+      // 💬 Chat
+      'activeChatId',
+      'user_chat_messages',
+
+      // 🧠 User activity
+      'journalEntries',
+      'boxBreathingScores',
+      'tapHappyScores',
+
+      // 📦 Cache
+      'lastProfileFetch',
+    ]);
+
+    // 🔁 Reset redux
+    dispatch(logout());
+
+    // 🚀 Reset navigation
+    navigation.reset({
+      index: 0,
+      routes: [{ name: AuthStackRoutes.Login }],
+    });
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+};
 
   return (
     <View style={styles.container}>

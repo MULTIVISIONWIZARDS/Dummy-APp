@@ -58,7 +58,7 @@ const TermsScreen = () => {
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Terms & Conditions</Text>
+        {/* <Text style={styles.title}>Terms & Conditions</Text> */}
 
         <Text style={styles.sectionTitle}>1. Introduction</Text>
         <Text style={styles.paragraph}>
