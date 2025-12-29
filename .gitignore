@@ -42,6 +42,8 @@ npm-debug.loggit status
 
 yarn-error.log
 
+#network
+network_security_config.xml
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
