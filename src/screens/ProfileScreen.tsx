@@ -178,7 +178,8 @@ const confirmLogout = async () => {
     console.error('Logout failed:', error);
   }
 };
-
+const DEFAULT_AVATAR ='https://cdn-icons-png.flaticon.com/512/847/847969.png';
+ 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.headerTitle}>
@@ -186,7 +187,14 @@ const confirmLogout = async () => {
         {/* Profile Section */}
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
-            <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
+            {/* <Image source={{ uri: userInfo.avatar }} style={styles.avatar} /> */}
+            <Image
+  source={{ uri: userInfo.avatar || DEFAULT_AVATAR }}
+  style={styles.avatar}
+  onError={() =>
+    setUserInfo(prev => ({ ...prev, avatar: DEFAULT_AVATAR }))
+  }
+/>
             <TouchableOpacity
               style={styles.editAvatarButton}
               onPress={() => navigation.navigate(AuthStackRoutes.EditProfileScreen)}

@@ -1022,14 +1022,20 @@ setAvatar(getValidAvatar(updatedUser.avatar));
       setLoading(false);
     }
   };
-
+const DEFAULT_AVATAR ='https://cdn-icons-png.flaticon.com/512/847/847969.png';
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         
         {/* Avatar */}
         <View style={styles.avatarSection}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          {/* <Image source={{ uri: avatar }} style={styles.avatar} /> */}
+          <Image
+  source={{ uri: avatar }}
+  style={styles.avatar}
+  onError={() => setAvatar(DEFAULT_AVATAR)}
+/>
+
           <TouchableOpacity style={styles.changePhotoButton} onPress={pickOrCapture}>
             <Text style={styles.changePhotoText}>Change Photo</Text>
           </TouchableOpacity>
