@@ -1399,7 +1399,14 @@ export default function App() {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  
+  // ⏱️ Time availability indicator
+const [timeAvailability, setTimeAvailability] = useState<
+  "available" | "unavailable" | null
+>(null);
+
+  // 🔒 Booked slots for selected date (avoid overlap UX)
+const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+
   const engine = useRef<IRtcEngine>();
 
   // ==================== AsyncStorage ====================
@@ -1447,6 +1454,52 @@ export default function App() {
   useEffect(() => {
     loadMeeting();
   }, []);
+// 🔹 Fetch already booked slots for selected date
+const fetchBookedSlots = async (date: Date) => {
+  try {
+    const yyyyMmDd = date.toISOString().split("T")[0];
+
+    const { data } = await api.get(`${API_BASE}/api/meetings/slots?date=${yyyyMmDd}`);
+
+    if (data?.success) {
+      setBookedSlots(data.slots || []);
+    }
+  } catch (err) {
+    console.log("Slot fetch error:", err);
+  }
+};
+useEffect(() => {
+  if (bookingModalVisible) {
+    fetchBookedSlots(selectedDate);
+  }
+}, [selectedDate, bookingModalVisible]);
+// 🔹 Check if selected time overlaps (30 min slot)
+const SLOT_MINUTES = 30;
+
+const isSlotBooked = (candidateStart: Date) => {
+  const candidateEnd = new Date(candidateStart);
+  candidateEnd.setMinutes(candidateEnd.getMinutes() + SLOT_MINUTES);
+
+  return bookedSlots.some(slot => {
+    const slotStart = new Date(slot.start);
+    const slotEnd = new Date(slot.end);
+
+    return (
+      candidateStart < slotEnd &&
+      candidateEnd > slotStart
+    );
+  });
+};
+const checkTimeAvailability = (date: Date, time: Date) => {
+  const candidate = new Date(date);
+  candidate.setHours(time.getHours());
+  candidate.setMinutes(time.getMinutes());
+  candidate.setSeconds(0);
+  candidate.setMilliseconds(0);
+
+  return isSlotBooked(candidate) ? "unavailable" : "available";
+};
+
 
   // ==================== Permissions ====================
   const requestPermissions = async () => {
@@ -1498,7 +1551,7 @@ export default function App() {
     setBookingModalVisible(true);
   };
 
-  const submitBooking = async () => {
+  const submitBooking2 = async () => {
     if (!topic.trim()) {
       Alert.alert('Error', 'Please enter a topic for the consultation');
       return;
@@ -1537,7 +1590,15 @@ export default function App() {
 
     setLoading(true);
     setBookingModalVisible(false);
-    
+    // ❌ Block already booked slot (UX only)
+if (isSlotBooked(startDateTime)) {
+  Alert.alert(
+    "Slot Unavailable",
+    "This time is already booked. Please select another time."
+  );
+  return;
+}
+
     try {
       const userId = await AsyncStorage.getItem('userId');
       const { data } = await api.post('/book', {
@@ -1563,6 +1624,86 @@ export default function App() {
     }
     setLoading(false);
   };
+const submitBooking = async () => {
+  if (!topic.trim()) {
+    Alert.alert("Error", "Please enter a topic for the consultation");
+    return;
+  }
+
+  const startDateTime = new Date(selectedDate);
+  startDateTime.setHours(selectedTime.getHours());
+  startDateTime.setMinutes(selectedTime.getMinutes());
+  startDateTime.setSeconds(0);
+  startDateTime.setMilliseconds(0);
+
+  const now = new Date();
+
+  if (startDateTime <= now) {
+    Alert.alert("Error", "Please select a future date and time");
+    return;
+  }
+
+  const minAdvance = new Date();
+  minAdvance.setDate(minAdvance.getDate() + 7);
+  if (startDateTime < minAdvance) {
+    Alert.alert("Error", "Must be booked at least 7 days in advance");
+    return;
+  }
+
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 30);
+  if (startDateTime > maxDate) {
+    Alert.alert("Error", "You can only book up to 30 days in advance");
+    return;
+  }
+
+  // 🔴 Slot unavailable → STOP before loading
+  if (isSlotBooked(startDateTime)) {
+    Alert.alert(
+      "Slot Unavailable",
+      "This time is unavailable. Please select one of the suggested slots."
+    );
+    return;
+  }
+
+  // ✅ Now start loading ONLY when API will be called
+  setLoading(true);
+  setBookingModalVisible(false);
+
+  try {
+    const userId = await AsyncStorage.getItem("userId");
+
+    const { data } = await api.post("/book", {
+      userId,
+      topic: topic.trim(),
+      startTime: startDateTime.toISOString(),
+    });
+
+    if (data.success) {
+      setMeeting(data.meeting);
+      await saveMeeting(data.meeting);
+
+      setModalType("success");
+      setModalTitle("Consultation Booked!");
+      setModalMessage(
+        `Your consultation is scheduled for ${formatDateTime(
+          data.meeting.startTime
+        )}.`
+      );
+      setModalVisible(true);
+    }
+  } catch (err: any) {
+    setModalType("error");
+    setModalTitle("Error");
+    setModalMessage(
+      err.response?.data?.message || "Failed to book meeting."
+    );
+    setModalVisible(true);
+  } finally {
+    // ✅ ALWAYS stops loader
+    setLoading(false);
+  }
+};
 
   // ==================== Poll for approval ====================
   useEffect(() => {
@@ -1993,7 +2134,7 @@ useEffect(() => {
                 <DateTimePicker
                   value={selectedDate}
                   mode="date"
-                  minimumDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)} // 7 days from now
+                  minimumDate={new Date(Date.now() + 8 * 24 * 60 * 60 * 1000)} // 7 days from now
                   maximumDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)} // 30 days from now
                   onChange={(event, date) => {
                     setShowDatePicker(Platform.OS === 'ios');
@@ -2014,16 +2155,37 @@ useEffect(() => {
                 </Text>
               </TouchableOpacity>
 
-              {showTimePicker && (
-                <DateTimePicker
-                  value={selectedTime}
-                  mode="time"
-                  onChange={(event, time) => {
-                    setShowTimePicker(Platform.OS === 'ios');
-                    if (time) setSelectedTime(time);
-                  }}
-                />
-              )}
+             {showTimePicker && (
+  <DateTimePicker
+    value={selectedTime}
+    mode="time"
+    onChange={(event, time) => {
+      setShowTimePicker(Platform.OS === "ios");
+      if (!time) return;
+
+      setSelectedTime(time);
+
+      // 🔥 Check availability instantly
+      const status = checkTimeAvailability(selectedDate, time);
+      setTimeAvailability(status);
+    }}
+  />
+)}
+{timeAvailability && (
+  <View style={{ marginTop: 8 }}>
+    {timeAvailability === "available" ? (
+      <Text style={{ color: "#10b981", fontWeight: "600" }}>
+        🟢 This time slot is available
+      </Text>
+    ) : (
+      <Text style={{ color: "#ef4444", fontWeight: "600" }}>
+       🔴 This time is unavailable. Please pick one of the suggested time slots below.
+
+      </Text>
+    )}
+  </View>
+)}
+
 
               <View style={s.modalButtons}>
                 <TouchableOpacity

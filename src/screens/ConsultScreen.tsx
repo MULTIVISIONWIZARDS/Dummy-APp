@@ -1645,6 +1645,7 @@ import { API_BASE } from "../constants/Constant";
 import io from "socket.io-client";
 import { LogBox } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 
 LogBox.ignoreLogs([
   'A props object containing a "key" prop is being spread into JSX',
@@ -1787,7 +1788,24 @@ export default function PatientChatScreen() {
       Alert.alert("Error", "Failed to send message");
     }
   };
+useFocusEffect(
+  React.useCallback(() => {
+    // Screen focused
+    if (userId && !socketRef.current) {
+      setupSocket(userId);
+    }
 
+    return () => {
+      // Screen blurred (TAB change / back)
+      if (socketRef.current) {
+        console.log('Disconnecting socket on blur 🔌');
+        socketRef.current.off('receiveMessage');
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [userId])
+);
   const renderBubble = (props) => (
     <Bubble
       {...props}

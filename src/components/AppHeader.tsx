@@ -35,7 +35,12 @@ const AppHeader: React.FC<Props> = ({
         <View style={styles.left}>
           {(back || showBackButton) && (
             <TouchableOpacity
-              onPress={() => navigation?.goBack?.()}
+              // onPress={() => navigation?.goBack?.()}
+                onPress={() => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      }
+    }}
               style={styles.iconBtn}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >

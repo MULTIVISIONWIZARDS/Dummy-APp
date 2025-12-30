@@ -83,11 +83,11 @@ const onSubmit = async (data) => {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('token', user.token || '');
 
-        Toast.show({
-          type: 'success',
-          text1: 'Account created successfully!',
-          position: 'bottom',
-        });
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'Account created successfully!',
+        //   position: 'bottom',
+        // });
 
         navigation.replace(AuthStackRoutes.Main);
       } else {
@@ -123,11 +123,11 @@ const onSubmit = async (data) => {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('token', user.token || '');
 
-        Toast.show({
-          type: 'success',
-          text1: 'Signed in successfully!',
-          position: 'bottom',
-        });
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'Signed in successfully!',
+        //   position: 'bottom',
+        // });
 
         const subscribed = await AsyncStorage.getItem(`subscription_${userId}`);
 

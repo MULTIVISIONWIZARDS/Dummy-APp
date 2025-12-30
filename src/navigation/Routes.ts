@@ -49,7 +49,7 @@ export const AuthStackRoutes = {
   TermsScreen: 'Terms & Condition',
   HelpScreen: 'My Subscription Plan',
   Subscription: 'Subscription',
-  CategoryDetail: 'CategoryDetail',
+  CategoryDetail: 'Wellness Details',
   Journal: 'Journal',
   HomeGame: 'home',
   BoxBreathing: 'breathing',
