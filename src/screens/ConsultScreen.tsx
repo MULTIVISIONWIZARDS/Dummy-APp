@@ -1661,7 +1661,9 @@ const COLORS = {
 };
 
 export default function PatientChatScreen() {
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<any[]>([]);
+
   const [authToken, setAuthToken] = useState(null);
   const [chatId, setChatId] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -1680,11 +1682,17 @@ export default function PatientChatScreen() {
     };
     loadUserData();
   }, []);
+ const SOCKET_URL = "https://vintagecms.cloud";
 
   const setupSocket = (userId) => {
     if (socketRef.current) return;
+    
 
-    socketRef.current = io(API_BASE, { transports: ["websocket"] });
+    // socketRef.current = io(SOCKET_URL, { transports: ["websocket"] });
+socketRef.current = io(SOCKET_URL, {
+  transports: ["websocket"],
+  path: "/socket.io",
+});
 
     socketRef.current.on("connect", () => {
       console.log("Socket Connected ✅", socketRef.current.id);
@@ -1723,7 +1731,7 @@ export default function PatientChatScreen() {
     if (!authToken) return;
     try {
       setLoading(true); // 👈 start loading
-      const res = await axios.get(`${API_BASE}/api/chat/my-chats`, {
+      const res = await axios.get(`${API_BASE}/chat/my-chats`, {
         headers: { Authorization: authToken },
       });
 
@@ -1731,7 +1739,7 @@ export default function PatientChatScreen() {
 
       if (!chat) {
         const startRes = await axios.post(
-          `${API_BASE}/api/chat/start`,
+          `${API_BASE}/chat/start`,
           {},
           { headers: { Authorization: authToken } }
         );
@@ -1771,15 +1779,24 @@ export default function PatientChatScreen() {
     try {
       const activeChatId = await AsyncStorage.getItem("activeChatId");
 
-      socketRef.current.emit("sendPrivateMessage", {
-        receiverId: "admin",
-        chatId: activeChatId,
-        message: newMsg.text,
-        senderId: userId,
-      });
+      if (socketRef.current) {
+  socketRef.current.emit("sendPrivateMessage", {
+    receiverId: "admin",
+    chatId: activeChatId,
+    message: newMsg.text,
+    senderId: userId,
+  });
+}
+
+      // socketRef.current.emit("sendPrivateMessage", {
+      //   receiverId: "admin",
+      //   chatId: activeChatId,
+      //   message: newMsg.text,
+      //   senderId: userId,
+      // });
 
       await axios.post(
-        `${API_BASE}/api/chat/${activeChatId}/message`,
+        `${API_BASE}/chat/${activeChatId}/message`,
         { message: newMsg.text },
         { headers: { Authorization: authToken } }
       );
@@ -1841,9 +1858,12 @@ useFocusEffect(
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
-        {
-          messages.length===0 && <View style={{flex:1,alignItems:"center",justifyContent:"center"}}><Text>Start the conversation</Text></View>
-        }   
+    {Array.isArray(messages) && messages.length === 0 && (
+  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <Text>Start the conversation</Text>
+  </View>
+)}
+ 
         <View style={{ flex: 1 }}>
           <GiftedChat
             messages={messages}

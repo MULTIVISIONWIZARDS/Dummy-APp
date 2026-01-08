@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -53,7 +53,7 @@ const AuthScreen = ({ navigation }) => {
   }, []);
 
 
-
+const scrollRef = useRef(null);
 const onSubmit = async (data) => {
   setLoading(true);
   try {
@@ -155,17 +155,30 @@ const onSubmit = async (data) => {
     setLoading(false);
   }
 };
+const scrollToInput = (y = 0) => {
+  setTimeout(() => {
+    scrollRef.current?.scrollTo({
+      y,
+      animated: true,
+    });
+  }, 100);
+};
+
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+   <SafeAreaView style={styles.container}>
+  <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+  >
+    <ScrollView
+      ref={scrollRef}
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+
+
           {/* Logo */}
           <View style={styles.logoContainer}>
             <View style={styles.logoBackground}>
@@ -233,6 +246,7 @@ const onSubmit = async (data) => {
                     onBlur={onBlur}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                      onFocus={() => scrollToInput(220)}
                   />
                 )}
               />
@@ -258,6 +272,7 @@ const onSubmit = async (data) => {
                     onChangeText={onChange}
                     onBlur={onBlur}
                   secureTextEntry={!show}
+                    onFocus={() => scrollToInput(220)}
                   />
                 )}
               />

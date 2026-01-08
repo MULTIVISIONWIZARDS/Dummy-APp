@@ -223,7 +223,7 @@ export default function WellnessDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const BASE_URL = `${API_BASE}/api/wellness`;
+  const BASE_URL = `${API_BASE}/wellness`;
 
   const fetchWellnessData = async () => {
     try {
@@ -264,8 +264,8 @@ export default function WellnessDashboard() {
       {/* 💀 Skeletons or Data */}
       {loading ? (
         [...Array(4)].map((_, i) => <SkeletonWidget key={i} />)
-      ) : wellnessData.length > 0 ? (
-        wellnessData.map((item) => <Widget key={item.id} {...item} />)
+      ) : wellnessDataa.length > 0 ? (
+        wellnessDataa.map((item) => <Widget key={item.id} {...item} />)
       ) : (
         <Text style={styles.emptyText}>No wellness items found.</Text>
       )}

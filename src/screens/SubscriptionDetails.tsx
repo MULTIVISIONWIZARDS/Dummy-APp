@@ -560,8 +560,8 @@ export default function SubscriptionDetailsScreen() {
   <View style={styles.row}>
     <Text style={[styles.breakdownLabel, { fontWeight: "bold", fontSize: 18 }]}>Total:</Text>
     <Text style={[styles.breakdownValue, { fontWeight: "bold", fontSize: 18, color: "#10B981" }]}>
-      ${totalAmount} {plan.price+extraAmount}  
-       {/* ${totalAmount}  */}
+      {/* ${totalAmount} {plan.price+extraAmount}   */}
+       ${totalAmount} 
     </Text>
   </View>
 </View>

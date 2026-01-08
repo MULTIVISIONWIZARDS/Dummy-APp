@@ -5,7 +5,7 @@ import { API_BASE } from "../constants/Constant";
 export const checkExtraFeeStatus = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
-    const res = await axios.get(`${API_BASE}/api/admin/user/extra-fee/latest`, {
+    const res = await axios.get(`${API_BASE}/admin/user/extra-fee/latest`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

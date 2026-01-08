@@ -1,4 +1,4 @@
-package com.appointmentapp
+package com.vintageappointment
 
 import android.app.Application
 import com.facebook.react.PackageList

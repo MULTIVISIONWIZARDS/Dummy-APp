@@ -717,7 +717,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../utils/apiClient'; // axios instance
 
 const CommonSubscription = () => {
-  const [plasns, setPlans] = useState([]);
+  const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -725,7 +725,7 @@ const CommonSubscription = () => {
   const [extraAmount, setExtraAmount] = useState(''); // NEW STATE
   const navigation = useNavigation();
 
-  const plans = [
+  const plasns = [
     {
       id: 'basic',
       name: 'Basic',

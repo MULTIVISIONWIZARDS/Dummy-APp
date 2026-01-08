@@ -17,7 +17,7 @@ import { API_BASE } from '../constants/Constant';
 type SubscriptionTier = 'Free' | 'Tier1' | 'Tier2' | 'Tier3';
 const dummySubscription: SubscriptionTier = 'Tier2';
 
-const API_BASE_URL = `${API_BASE}/api/symptoms`;
+const API_BASE_URL = `${API_BASE}/symptoms`;
 
 const DailyJournalScreen = () => {
   const today = new Date().toISOString().split('T')[0];

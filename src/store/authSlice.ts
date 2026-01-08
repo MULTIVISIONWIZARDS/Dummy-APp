@@ -17,8 +17,8 @@ export interface AuthState {
   error: string | null;
 }
 
-const API_URL = `${API_BASE}/api/auth`; // 👈 use your LAN IP (not localhost)
-const APIRL = `${API_BASE}/api/users`; // 👈 use your LAN IP (not localhost)
+const API_URL = `${API_BASE}/auth`; // 👈 use your LAN IP (not localhost)
+const APIRL = `${API_BASE}/users`; // 👈 use your LAN IP (not localhost)
 
 const initialState: AuthState = {
   user: null,

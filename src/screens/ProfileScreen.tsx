@@ -8,7 +8,8 @@ import {
   ScrollView,
   Modal,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Linking
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logout } from '../store/authSlice';
@@ -18,7 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthStackRoutes } from '../navigation/Routes';
 import axios from 'axios';
-import { API_BASE } from '../constants/Constant';
+import { API_BASE, APIBASEWITH } from '../constants/Constant';
 
 const DATA_EXPIRY = 6 * 60 * 60 * 1000; // 6 hours
 
@@ -48,7 +49,7 @@ const ProfileScreen: React.FC<any> = () => {
     const cleanPath = url.replace(/^https?:\/\/[^/]+/, "");
 
     // Add correct base URL
-    return `${API_BASE}${cleanPath}`;
+    return `${APIBASEWITH}${cleanPath}`;
   };
 
   // ------------------ LOAD PROFILE ------------------
@@ -87,7 +88,7 @@ const ProfileScreen: React.FC<any> = () => {
     const token = await AsyncStorage.getItem("token");
     if (!token) return;
 
-    const res = await axios.get(`${API_BASE}/api/users/profile`, {
+    const res = await axios.get(`${API_BASE}/users/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -225,6 +226,26 @@ const DEFAULT_AVATAR ='https://cdn-icons-png.flaticon.com/512/847/847969.png';
           <ProfileMenuItem icon="notifications-none" title="Notifications" onPress={() => navigation.navigate(AuthStackRoutes.NotificationsScreen)} />
           <ProfileMenuItem icon="help-outline" title="Subscription and features" onPress={() => navigation.navigate(AuthStackRoutes.HelpScreen as never)} />
           <ProfileMenuItem icon="description" title="Terms and Conditions" onPress={() => navigation.navigate(AuthStackRoutes.TermsScreen as never)} />
+<ProfileMenuItem
+  icon="delete-outline"
+  title="Account Deletion Request"
+  onPress={() =>
+    Alert.alert(
+      'Account Deletion Request',
+      'You will be redirected to our website to request account deletion. Do you want to continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Continue',
+          onPress: () =>
+            Linking.openURL('https://vintagecms.cloud/account-deletion.html'),
+        },
+      ],
+    )
+  }
+/>
+
+
           <ProfileMenuItem icon="logout" title="Log Out" showArrow={false} onPress={() => setLogoutModalVisible(true)} />
         </View>
       </ScrollView>

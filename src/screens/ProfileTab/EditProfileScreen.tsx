@@ -764,7 +764,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
-import { API_BASE } from '../../constants/Constant';
+import { API_BASE, APIBASEWITH } from '../../constants/Constant';
 
 const DATA_EXPIRY = 6 * 60 * 60 * 1000; // 6 hours
 
@@ -784,7 +784,7 @@ const EditProfileScreen: React.FC = () => {
   const cleanPath = url.replace(/^https?:\/\/[^/]+/, "");
 
   // Then prepend base URL dynamically
-  return `${API_BASE}${cleanPath}`;
+  return `${APIBASEWITH}${cleanPath}`;
 };
 
 
@@ -832,7 +832,7 @@ const EditProfileScreen: React.FC = () => {
     const token = await AsyncStorage.getItem('token');
     if (!token) return;
 
-    const res = await axios.get(`${API_BASE}/api/users/profile`, {
+    const res = await axios.get(`${API_BASE}/users/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -953,7 +953,7 @@ const handleSave = async () => {
       });
     }
 
-    const res = await axios.put(`${API_BASE}/api/users/profile`, formData, {
+    const res = await axios.put(`${API_BASE}/users/profile`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -1003,7 +1003,7 @@ setAvatar(getValidAvatar(updatedUser.avatar));
         });
       }
 
-      const res = await axios.put(`${API_BASE}/api/users/profile`, formData, {
+      const res = await axios.put(`${API_BASE}/users/profile`, formData, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
@@ -1047,7 +1047,8 @@ const DEFAULT_AVATAR ='https://cdn-icons-png.flaticon.com/512/847/847969.png';
           <TextInput style={styles.input} value={name} onChangeText={setName} />
 
           <Text style={styles.label}>Phone</Text>
-          <TextInput style={styles.input} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+          <TextInput style={styles.input} placeholderTextColor={'#1C1C1E'} placeholder="Enter mobile number"
+ value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
 
           <Text style={styles.label}>Email</Text>
           <TextInput style={styles.input} value={email} onChangeText={setEmail} autoCapitalize="none" />

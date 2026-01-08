@@ -3084,6 +3084,8 @@ export default function CategoryGrid({ onPressItem }: { onPressItem?: (item: any
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [tooltipId, setTooltipId] = useState<string | null>(null);
+
+  
 const DATA = [
   {
     id: '1',
@@ -3426,21 +3428,53 @@ const DATA = [
     ],
   },
 ];
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const res = await API.get('/categories'); // fetch from backend
-        if (res.data.success) setData(res.data.data);
-        else console.log('Failed to fetch categories:', res.data.message);
-      } catch (error: any) {
-        console.log('Error fetching categories:', error.message);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  let mounted = true;
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get('/categories');
+
+      if (!mounted) return;
+
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        // setData(res.data.data);
+        setData(Array.isArray(res.data?.data) ? res.data.data : []);
+
+      } else {
+        setData([]);
       }
-    };
-    fetchCategories();
-  }, []);
+    } catch {
+      setData([]);
+    } finally {
+      if (mounted) setLoading(false);
+    }
+  };
+
+  fetchCategories();
+  return () => {
+    mounted = false;
+  };
+}, []);
+
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await API.get('/categories'); // fetch from backend
+  //       console.log("::::::::::res::::::",res);
+        
+  //       if (res.data.success) setData(res.data.data);
+  //       else console.log('Failed to fetch categories:', res.data.message);
+  //     } catch (error: any) {
+  //       console.log('Error fetching categories:', error.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchCategories();
+  // }, []);
 
   const handlePress = (item: any) => {
     onPressItem?.(item);
@@ -3462,8 +3496,8 @@ const DATA = [
 
   const renderItem = ({ item }: { item: any }) => (
     <Tooltip
-      isVisible={tooltipId === item.id}
-      // isVisible={tooltipId === item._id}
+      // isVisible={tooltipId === item.id}
+      isVisible={tooltipId === item._id}
       content={<Text style={{ color: "#000000ff" }}>{`Learn more about ${item.title}`}</Text>}
       placement="top"
       onClose={() => setTooltipId(null)}
@@ -3473,8 +3507,8 @@ const DATA = [
       <TouchableOpacity
         style={styles.cardWrapper}
         onPress={() => handlePress(item)}
-        onLongPress={() => setTooltipId(item.id)}
-        // onLongPress={() => setTooltipId(item._id)}
+        // onLongPress={() => setTooltipId(item.id)}
+        onLongPress={() => setTooltipId(item._id)}
         delayLongPress={300}
         activeOpacity={0.8}
       >
@@ -3491,7 +3525,7 @@ const DATA = [
     </Tooltip>
   );
 
-  const renderSkeleton = () => {
+  const renderSkeletonj = () => {
     const totalItems = 8;
     const skeletonRows = [];
 
@@ -3518,16 +3552,46 @@ const DATA = [
 
     return skeletonRows;
   };
+  const renderSkeleton = () => {
+  const totalItems = 8;
+
+  return (
+    <>
+      <SkeletonPlaceholder key="skeleton-header">
+        <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
+      </SkeletonPlaceholder>
+
+      {Array.from({ length: totalItems / NUM_COLUMNS }).map((_, rowIndex) => (
+        <View key={`skeleton-row-${rowIndex}`} style={styles.row}>
+          {Array.from({ length: NUM_COLUMNS }).map((__, colIndex) => (
+            <View key={`skeleton-cell-${rowIndex}-${colIndex}`} style={styles.cardWrapper}>
+              <SkeletonPlaceholder>
+                <View style={styles.card} />
+                <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
+              </SkeletonPlaceholder>
+            </View>
+          ))}
+        </View>
+      ))}
+    </>
+  );
+};
+
 
   return (
     <View style={styles.container}>
       {loading ? renderSkeleton() : (
         <>
-          <Text style={styles.headerTitle}>Daily Wellness</Text>
+ {Array.isArray(data) && data.length > 0 && (
+  <Text style={styles.headerTitle}>Daily Wellness</Text>
+)}
+
           <FlatList
-            data={DATA}
+            data={Array.isArray(data) ? data : []}
             // keyExtractor={i => i._id}
-              keyExtractor={item => item.id}
+            keyExtractor={(item, index) => item._id ?? String(index)}
+
+              // keyExtractor={item => item.id}
             renderItem={renderItem}
             numColumns={NUM_COLUMNS}
             scrollEnabled={false}

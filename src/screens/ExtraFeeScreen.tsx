@@ -97,7 +97,7 @@ const ExtraFeeScreen = ({ route, navigation }) => {
       const token = await AsyncStorage.getItem("token");
 
       await axios.patch(
-        `${API_BASE}/api/admin/extrafee/${fee._id}/pay`,
+        `${API_BASE}/admin/extrafee/${fee._id}/pay`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

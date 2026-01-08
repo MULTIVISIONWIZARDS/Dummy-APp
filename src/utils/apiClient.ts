@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE } from '../constants/Constant';
 
 const API = axios.create({
-  baseURL: `${API_BASE}/api`, // ⚠️ Replace with your backend IP:port
+  baseURL: `${API_BASE}`, // ⚠️ Replace with your backend IP:port
   timeout: 10000,
 });
 

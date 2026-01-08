@@ -1345,6 +1345,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { API_BASE } from '../../constants/Constant';
 import SuccessModal from '../successModal/SuccessModal';
 import SoundPlayer from 'react-native-sound-player';
+import Colors from '../../constants/Colors';
 
 // // ==================== CONFIG ====================
 // const CONFIG = {
@@ -1358,9 +1359,10 @@ import SoundPlayer from 'react-native-sound-player';
 //   headers: {'Content-Type': 'application/json', Authorization: CONFIG.AUTH},
 // });
 const CONFIG = {
-  BACKEND: `${API_BASE}/api/meetings`,
+  BACKEND: `${API_BASE}/meetings`,
   AGORA_APP_ID: 'e7ce3caec69347b3a47deaecc69d2699',
 };
+
 
 /* ==================== AXIOS INSTANCE (JWT SAFE) ==================== */
 const api = axios.create({
@@ -1459,7 +1461,7 @@ const fetchBookedSlots = async (date: Date) => {
   try {
     const yyyyMmDd = date.toISOString().split("T")[0];
 
-    const { data } = await api.get(`${API_BASE}/api/meetings/slots?date=${yyyyMmDd}`);
+    const { data } = await api.get(`${API_BASE}/meetings/slots?date=${yyyyMmDd}`);
 
     if (data?.success) {
       setBookedSlots(data.slots || []);
@@ -1748,7 +1750,7 @@ const submitBooking = async () => {
     return () => clearInterval(interval);
   }, [meeting, accepted]);
   const checkMeetingStatus = async () => {
-  const { data } = await api.get(`${API_BASE}/api/meetings/status/${meeting._id}`);
+  const { data } = await api.get(`${API_BASE}/meetings/status/${meeting._id}`);
 
   if (data?.expired) {
     await removeMeeting();
@@ -1901,7 +1903,7 @@ const joinCall= async () => {
   
   try {
     // 1️⃣ Ask backend for token JUST-IN-TIME
-    const { data } = await api.get(`${API_BASE}/api/meetings/join/${meeting._id}`);
+    const { data } = await api.get(`${API_BASE}/meetings/join/${meeting._id}`);
 
     if (!data?.success) {
       Alert.alert("Error", data?.message || "Unable to join");
@@ -2104,7 +2106,7 @@ useEffect(() => {
         onRequestClose={() => setBookingModalVisible(false)}>
         <View style={s.modalOverlay}>
           <View style={s.bookingModal}>
-            <Text style={s.bookingTitle}>📅 Book a Meeting</Text>
+            <Text style={s.bookingTitle}>Book a Meeting</Text>
             
             <ScrollView style={s.formContainer}>
               <Text style={s.label}>Topic / Reason for Consultation *</Text>
@@ -2112,6 +2114,7 @@ useEffect(() => {
                 style={s.input}
                 placeholder="e.g., Health related, Follow-up visit, etc."
                 value={topic}
+                placeholderTextColor={'black'}
                 onChangeText={setTopic}
                 multiline
                 numberOfLines={2}
@@ -2399,7 +2402,7 @@ icon: {
     borderRadius: 8,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#e5e7eb',color:Colors.text_black
   },
   dateButton: {
     backgroundColor: '#f3f4f6',

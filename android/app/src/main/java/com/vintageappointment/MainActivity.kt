@@ -1,4 +1,4 @@
-package com.appointmentapp
+package com.vintageappointment
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

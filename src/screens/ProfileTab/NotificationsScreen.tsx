@@ -8,14 +8,14 @@ const NotificationsScreen = () => {
     {
       id: '1',
       title: 'Appointment Confirmed',
-      body: 'Your video call with Dr. Smith is confirmed for 10 Sep, 3:00 PM.',
+      body: 'Your video call  is confirmed for XX Mon, 3:00 PM.',
       time: '2h ago',
       type: 'success',
     },
     {
       id: '2',
       title: 'New Message',
-      body: 'You have a new message from Dr. Patel.',
+      body: 'You have a new message.',
       time: '3h ago',
       type: 'message',
     },

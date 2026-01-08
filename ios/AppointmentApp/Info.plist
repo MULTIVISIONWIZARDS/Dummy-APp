@@ -53,6 +53,9 @@
     <string></string>
     <key>NSMicrophoneUsageDescription</key>
     <string>This app needs microphone access</string>
+    <key>NSLocalNetworkUsageDescription</key>
+<string>This app uses the local network for real-time video consultations</string>
+
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app needs access to your photos</string>
 
@@ -62,6 +65,11 @@
     <array>
         <string>arm64</string>
     </array>
+    <key>NSBonjourServices</key>
+<array>
+  <string>_agora._udp</string>
+  <string>_agora._tcp</string>
+</array>
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
