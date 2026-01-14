@@ -183,7 +183,7 @@ const DEFAULT_AVATAR ='https://cdn-icons-png.flaticon.com/512/847/847969.png';
  
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.headerTitle}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.headerTitle} contentContainerStyle={{ paddingBottom: 0 }}>
 
         {/* Profile Section */}
         <View style={styles.profileSection}>
@@ -289,7 +289,7 @@ const ProfileMenuItem = ({ icon, title, onPress, showArrow = true }: any) => (
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
   headerTitle: { marginTop: 25 },
-  profileSection: { alignItems: 'center', marginBottom: 40 },
+  profileSection: { alignItems: 'center', marginBottom:0 },
   avatarContainer: {
     position: 'relative', marginBottom: 20, borderWidth:2,
     borderColor:Colors.darkBlueP1, borderRadius:80, padding:2
