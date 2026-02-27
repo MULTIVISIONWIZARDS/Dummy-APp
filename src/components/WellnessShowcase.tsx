@@ -219,7 +219,9 @@ const SkeletonHeader = () => {
 };
 
 export default function WellnessDashboard() {
-  const [wellnessDataa, setWellnessData] = useState<any[]>();
+  // const [wellnessDataa, setWellnessData] = useState<any[]>();
+  const [wellnessDataa, setWellnessData] = useState<any[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -228,7 +230,8 @@ export default function WellnessDashboard() {
   const fetchWellnessData = async () => {
     try {
       const res = await axios.get(BASE_URL);
-      setWellnessData(res.data.data || []);
+      // setWellnessData(res.data.data || []);
+      setWellnessData(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) {
       console.error("❌ Error fetching wellness data:", err.message);
     } finally {
@@ -264,8 +267,14 @@ export default function WellnessDashboard() {
       {/* 💀 Skeletons or Data */}
       {loading ? (
         [...Array(4)].map((_, i) => <SkeletonWidget key={i} />)
-      ) : wellnessDataa.length > 0 ? (
-        wellnessDataa.map((item) => <Widget key={item.id} {...item} />)
+    
+        ) : Array.isArray(wellnessDataa) && wellnessDataa.length > 0 ? (
+
+        // wellnessDataa?.map((item) => <Widget key={item.id} {...item} />)
+        wellnessDataa?.map((item) => (
+  <Widget key={item._id} {...item} />
+))
+
       ) : (
         <Text style={styles.emptyText}>No wellness items found.</Text>
       )}

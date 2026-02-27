@@ -14,3 +14,15 @@
 
 -keep class io.agora.** { *; }
 -keep class com.google.devtools.build.android.desugar.runtime.** { *; }
+
+# React Native InAppBrowser
+-keep class com.proyecto26.** { *; }
+-dontwarn com.proyecto26.**
+
+# AndroidX Browser (Chrome Custom Tabs)
+-keep class androidx.browser.** { *; }
+-dontwarn androidx.browser.**
+
+# Stripe (safety)
+-keep class com.stripe.android.** { *; }
+-dontwarn com.stripe.android.**

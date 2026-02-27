@@ -96,7 +96,7 @@ const PatientTestimonial = () => {
       </ScrollView>
 
       <Text style={styles.footerNote}>
-        💚 Thank you to all our amazing patients for trusting 4 The Family.
+        💚 Thank you to all our amazing patients for trusting 4 The family healthcare.
       </Text>
     </View>
   );

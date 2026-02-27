@@ -23,6 +23,8 @@ import ConsultScreen from '../screens/ConsultScreen';
 import VideoMeetingScreen from '../components/BookinMeet/VideoMeetingScreen';
 import SubscriptionDetailsScreen from '../screens/SubscriptionDetails';
 import ExtraFeeScreen from '../screens/ExtraFeeScreen';
+import ResetPasswordScreen from '../components/ResetPassword';
+import ForgotPasswordScreen from '../components/ForgotPassword';
 
 // ----------------------
 // 1️⃣ Route Types
@@ -60,7 +62,9 @@ export const AuthStackRoutes = {
   VideoMeeting: 'Video',
   SubscriptionDetails: 'SubscriptionDetails',
   Main:"Main",
-  ExtraFee:"ExtraFee"
+  ExtraFee:"ExtraFee",
+  ResetPassword:'ResetPassword',
+  ForgotPassword:"ForgotPassword"
 } as const;
 
 export const MainTabRoutes = {
@@ -93,6 +97,8 @@ export const authRoutes: RouteConfig<keyof typeof AuthStackRoutes>[] = [
   { name: AuthStackRoutes.VideoMeeting, component: VideoMeetingScreen, options: { headerShown: false } },
   { name: AuthStackRoutes.SubscriptionDetails, component: SubscriptionDetailsScreen, options: { headerShown: true } },
   { name: AuthStackRoutes.ExtraFee, component: ExtraFeeScreen, options: { headerShown: false } },
+  { name: AuthStackRoutes.ResetPassword, component: ResetPasswordScreen, options: { headerShown: false } },
+  { name: AuthStackRoutes.ForgotPassword, component: ForgotPasswordScreen, options: { headerShown: false } },
 ];
 
 // ----------------------
@@ -104,7 +110,42 @@ export const mainRoutes: RouteConfig<keyof typeof MainTabRoutes>[] = [
   { name: MainTabRoutes.Profile, component: ProfileScreen, icon: 'account', options: { headerShown: true ,back:true}, color: 'pink' },
 ];
 
+// ----------------------
+// 5️⃣ Stack Param Lists (IMPORTANT)
+// ----------------------
 
+export type AuthStackParamList = {
+  Splash: undefined;
+  Login: undefined;
+  Signup: undefined;
+  Onboard: undefined;
+  EditProfileScreen: undefined;
+  NotificationsScreen: undefined;
+  SettingsScreen: undefined;
+  TermsScreen: undefined;
+  HelpScreen: undefined;
+  Subscription: undefined;
+  CategoryDetail: undefined;
+  Journal: undefined;
+  HomeGame: undefined;
+  BoxBreathing: undefined;
+  TapHappy: undefined;
+  Scores: undefined;
+  PaymentWebView: undefined;
+  PaymentSuccess: undefined;
+  VideoMeeting: undefined;
+  SubscriptionDetails: undefined;
+  Main: undefined;
+  ExtraFee: undefined;
+  ResetPassword: undefined;
+  ForgotPassword: undefined;
+};
+
+export type MainTabParamList = {
+  Home: undefined;
+  Consults: undefined;
+  Profile: undefined;
+};
 
 // ----------------------
 // ✅ Usage Examples

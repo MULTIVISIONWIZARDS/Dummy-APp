@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     // height: height * 0.55,
-    height: height * 0.45,
+    height: height * 0.46,
   },
   fullImage: {
     height: "100%",resizeMode:"contain"

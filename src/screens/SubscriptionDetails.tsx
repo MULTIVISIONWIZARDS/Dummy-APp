@@ -366,7 +366,7 @@
 // });
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -378,14 +378,18 @@ import {
   UIManager,
   Platform,
   Alert,
+  Linking,
+  ActivityIndicator,
+  AppState,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
 import { AuthStackRoutes } from "../navigation/Routes";
-
+import API from "../utils/apiClient";
+// import RazorpayCheckout from "react-native-razorpay";
 const { width } = Dimensions.get("window");
-
+import InAppBrowser from "react-native-inappbrowser-reborn";
 // Enable LayoutAnimation for Android
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -394,6 +398,8 @@ if (Platform.OS === "android") {
 export default function SubscriptionDetailsScreen() {
   const route = useRoute();
   const navigation = useNavigation();
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
   const { plan, isYearly, userId , extraAmount,
         totalAmount,extraAmountT} = route.params as {
     plan: {
@@ -433,6 +439,167 @@ export default function SubscriptionDetailsScreen() {
   ];
 
   const [expandedFaqs, setExpandedFaqs] = useState<number[]>([]);
+const startRazorpayPayments = async () => {
+  try {
+    // 1️⃣ Create order from backend
+    const res = await API.post("/subscriptions/razorpay-order", {
+      subscriptionId: plan._id || plan.id, // use Mongo _id if available
+    });
+
+    const { orderId, amount, key } = res.data;
+
+    // 2️⃣ Open Razorpay checkout
+    RazorpayCheckout.open({
+      key,
+      order_id: orderId,
+      amount,
+      currency: "INR",
+      name: "Health Wellness",
+      description: plan.name,
+      prefill: {
+        email: "test@example.com",
+        contact: "9999999999",
+      },
+      theme: { color: plan.color },
+    })
+      .then(() => {
+        Alert.alert(
+          "Payment Successful",
+          "Your subscription will be activated shortly",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.replace("PaymentSuccess"),
+            },
+          ]
+        );
+      })
+      .catch(() => {
+        Alert.alert("Payment Cancelled");
+      });
+  } catch (err) {
+    console.log(err);
+    Alert.alert("Error", "Unable to start payment");
+  }
+};
+const startRazorpayPayment = async () => {
+  try {
+    console.log("👉 START PAYMENT FOR PLAN:", plan._id);
+
+    // 1️⃣ Create Razorpay order from backend
+    const res = await API.post("/subscriptions/razorpay-order", {
+      subscriptionId: plan._id, // MUST be Mongo _id
+    });
+
+    console.log("✅ ORDER RESPONSE:", res.data);
+
+    const { orderId, amount, key } = res.data;
+
+    if (!orderId || !amount || !key) {
+      throw new Error("Invalid order response");
+    }
+
+    // 2️⃣ Open Razorpay checkout
+    await RazorpayCheckout.open({
+      key,
+      order_id: orderId,
+      amount, // already in paise from backend
+      currency: "INR",
+      name: "Vintage Appointment",
+      description: plan.name,
+      prefill: {
+        email: "test@example.com",
+        contact: "9999999999",
+      },
+      theme: { color: plan.color || "#10B981" },
+    });
+
+    // ✅ DO NOTHING HERE
+    // Webhook will activate subscription
+
+    Alert.alert(
+      "Payment Successful",
+      "Your subscription will be activated shortly",
+      [
+        {
+          text: "OK",
+          onPress: () => navigation.replace("PaymentSuccess"),
+        },
+      ]
+    );
+
+  } catch (err: any) {
+    console.log("❌ PAYMENT ERROR:", err?.description || err);
+    Alert.alert("Payment Failed", "Unable to start payment");
+  }
+};
+
+
+const startStripePayment = async (currency = "usd") => {
+  if (paymentLoading) {
+    console.log("[Stripe] Payment already in progress");
+    return;
+  }
+
+  console.log("[Stripe] Starting payment", {
+    planId: plan?._id,
+    currency,
+  });
+
+  try {
+    setPaymentLoading(true);
+
+    console.log("[Stripe] Calling checkout API...");
+    const res = await API.post("/subscriptions/stripe-checkout", {
+      subscriptionId: plan._id,
+      currency,
+    });
+
+    console.log("[Stripe] API response:", res?.data);
+
+    const url = res?.data?.url;
+    if (!url) {
+      console.error("[Stripe] Checkout URL missing", res?.data);
+      throw new Error("Checkout URL not received");
+    }
+
+    console.log("[Stripe] Checkout URL received:", url);
+
+    const isBrowserAvailable = await InAppBrowser.isAvailable();
+    console.log("[Stripe] InAppBrowser available:", isBrowserAvailable);
+
+    if (isBrowserAvailable) {
+      console.log("[Stripe] Opening InAppBrowser...");
+      await InAppBrowser.open(url, {
+        dismissButtonStyle: "close",
+        preferredBarTintColor: "#ffffff",
+        preferredControlTintColor: "#000000",
+        enableUrlBarHiding: true,
+        showTitle: false,
+      });
+    } else {
+      console.log("[Stripe] Falling back to Linking.openURL");
+      await Linking.openURL(url);
+    }
+
+    console.log("[Stripe] Payment flow opened successfully");
+  } catch (err) {
+    console.error("[Stripe] Payment start failed ❌", {
+      message: err?.message,
+      status: err?.response?.status,
+      apiError: err?.response?.data,
+      stack: err?.stack,
+    });
+
+    Alert.alert(
+      "Payment Error",
+      err?.response?.data?.message || "Unable to start payment"
+    );
+  } finally {
+    setPaymentLoading(false);
+    console.log("[Stripe] Payment loading reset");
+  }
+};
 
   const toggleFaq = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -442,6 +609,17 @@ export default function SubscriptionDetailsScreen() {
       setExpandedFaqs([...expandedFaqs, index]);
     }
   };
+ useEffect(() => {
+  const subscription = AppState.addEventListener("change", (state) => {
+    if (state === "active") {
+      // User returned from payment screen
+      setPaymentLoading(false);
+    }
+  });
+
+  return () => subscription.remove();
+}, []);
+
 
   return (
    
@@ -565,23 +743,41 @@ export default function SubscriptionDetailsScreen() {
     </Text>
   </View>
 </View>
+<TouchableOpacity
+  style={[
+    styles.subscribeBtn,
+    {
+      backgroundColor: plan.color,
+      opacity: paymentLoading ? 0.7 : 1,
+    },
+  ]}
+  disabled={paymentLoading}
+  onPress={() => startStripePayment("usd")}
+>
+  {paymentLoading ? (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <ActivityIndicator color="#fff" size="small" />
+      <Text style={[styles.subscribeBtnText, { marginLeft: 10 }]}>
+        Redirecting to payment…
+      </Text>
+    </View>
+  ) : (
+    <Text style={styles.subscribeBtnText}>Continue to Payment</Text>
+  )}
+</TouchableOpacity>
+
+
 
           {/* Subscribe Button */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.subscribeBtn, { backgroundColor: plan.color }]}
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate(AuthStackRoutes.PaymentWebView, {
-                paymentUrl: plan.paymentUrl,
-                planId: plan.id,
-                planName: plan.name,
-                userId,
-              })
-            }
+            
+             onPress={() => startStripePayment("usd")}
           >
             <Text style={styles.subscribeBtnText}>Continue to Payment</Text>
-            {/* <Text style={styles.subscribeBtnText}>Subscribe Now</Text> */}
-          </TouchableOpacity>
+          
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
  

@@ -46,18 +46,30 @@
         <key>NSAllowsLocalNetworking</key>
         <true/>
     </dict>
+<!-- Deep Linking: Custom URL Scheme -->
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string>com.vintageappointment</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>myapp</string>
+    </array>
+  </dict>
+</array>
 
     <key>NSCameraUsageDescription</key>
-    <string>This app needs camera access to capture images</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string></string>
+<string>Camera access is required for video consultations and profile photos.</string>
+
     <key>NSMicrophoneUsageDescription</key>
-    <string>This app needs microphone access</string>
+<string>Microphone access is required for audio during video consultations.</string>
     <key>NSLocalNetworkUsageDescription</key>
 <string>This app uses the local network for real-time video consultations</string>
 
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app needs access to your photos</string>
+   
+    <string>Photo access is required to choose a profile picture.</string>
 
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>

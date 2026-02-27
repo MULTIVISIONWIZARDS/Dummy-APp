@@ -81,21 +81,21 @@ export const loginUser = createAsyncThunk<
   { rejectValue: string }
 >('auth/loginUser', async (credentials, thunkAPI) => {
   try {
-    const { email, password } = credentials;
+    // const { email, password } = credentials;
 
-    // Dummy login check before API call
-    if (email === 'test@test.com' && password === '123456') {
-      const dummyUser = {
-        id: 'dummy_id_001',
-        name: 'Test User',
-        email: 'test@test.com'
-      };
+    // // Dummy login check before API call
+    // if (email === 'test@test.com' && password === '123456') {
+    //   const dummyUser = {
+    //     id: 'dummy_id_001',
+    //     name: 'Test User',
+    //     email: 'test@test.com'
+    //   };
 
-      await AsyncStorage.setItem('token', 'dummy_token_123');
-      await AsyncStorage.setItem('user', JSON.stringify(dummyUser));
+    //   await AsyncStorage.setItem('token', 'dummy_token_123');
+    //   await AsyncStorage.setItem('user', JSON.stringify(dummyUser));
 
-      return { ...dummyUser, token: 'dummy_token_123' };
-    }
+    //   return { ...dummyUser, token: 'dummy_token_123' };
+    // }
 
     // If not dummy login, proceed with real API
     const response = await axios.post(`${API_URL}/login`, credentials);

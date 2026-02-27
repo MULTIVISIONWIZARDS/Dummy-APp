@@ -94,13 +94,13 @@ import { useNavigation } from "@react-navigation/native";
 import SoundPlayer from "react-native-sound-player";
 import Colors from "../constants/Colors";
 import { AuthStackRoutes } from "../navigation/Routes";
+import API from "../utils/apiClient";
 
 export default function PaymentSuccessScreen() {
   const navigation = useNavigation<any>();
 
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     // try {
     //   // Play local sound
@@ -124,14 +124,44 @@ export default function PaymentSuccessScreen() {
       }),
     ]).start();
 
-    // Auto navigate to Main after 3 seconds
-    const timer = setTimeout(() => {
-      navigation.replace(AuthStackRoutes.Main);
-    }, 5000); // 3000ms = 3 seconds
-
-    // Clear timeout if component unmounts
-    return () => clearTimeout(timer);
   }, []);
+ useEffect(() => {
+  const verifySubscription = async () => {
+    try {
+      const res = await API.get("/subscriptions/my-subscription");
+
+      if (res.data.success) {
+        // animation
+        Animated.sequence([
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            friction: 4,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacityAnim, {
+            toValue: 1,
+            duration: 500,
+            easing: Easing.ease,
+            useNativeDriver: true,
+          }),
+        ]).start();
+
+        // auto redirect
+        setTimeout(() => {
+          navigation.reset({
+    index: 0,
+    routes: [{ name: AuthStackRoutes.Main }],
+  })
+        }, 3000);
+      }
+    } catch (err) {
+      console.log("⏳ Waiting for webhook...");
+      // stay on screen or show loader
+    }
+  };
+
+  verifySubscription();
+}, []);
 
   return (
     <View style={styles.container}>

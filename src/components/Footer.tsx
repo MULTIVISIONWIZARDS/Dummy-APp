@@ -86,8 +86,8 @@ const Footer: React.FC<FooterProps> = ({
 
   const links = [
     { label: 'Terms of Service', url: 'https://multivisionwizards.com/terms', icon: '📋' },
-    { label: 'Privacy Policy', url: 'https://multivisionwizards.com/privacy', icon: '🔒' },
-    { label: 'Contact Us', url: 'https://multivisionwizards.com/contact-us.php', icon: '💬' },
+    { label: 'Privacy Policy', url: 'https://vintagecms.cloud/privacy-policy.html', icon: '🔒' },
+    { label: 'Contact Us', url: 'https://vintagehealthbody.com/contact-us/', icon: '💬' },
   ];
 
   const socialLindks = [

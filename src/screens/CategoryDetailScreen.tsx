@@ -5,7 +5,15 @@ import LinearGradient from "react-native-linear-gradient";
 import CommonSubscription from "../components/CommonSubscription";
 
 export default function PatientDietScreen({ route }) {
-  const { item } = route.params; // category object from CategoryGrid
+  // const { item } = route.params;
+const item = route?.params?.item;   
+  if (!item) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>No data available</Text>
+      </View>
+    );
+  }
   const [hasSubscription, setHasSubscription] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -65,7 +73,7 @@ export default function PatientDietScreen({ route }) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 15 },
   screenTitle: { fontSize: 28, fontWeight: "700", color: "#0D3B66", marginBottom: 16, textAlign: "center" },
-  card: { backgroundColor: "#fff", borderRadius: 16, marginBottom: 20, padding: 15 },
+  card: {  borderRadius: 16, marginBottom: 20, padding: 15 },
   cardImage: { width: "100%", height: 160, borderRadius: 12 },
   cardTitle: { fontSize: 22, fontWeight: "700", marginTop: 12, color: "#0D3B66" },
   cardDescription: { fontSize: 16, marginTop: 6, color: "#37474F" },

@@ -20,12 +20,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { loginUser, signupUser } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { AuthStackRoutes } from '../navigation/Routes';
+import Colors from '../constants/Colors';
 const AuthScreen = ({ navigation }) => {
   const dispatch=useDispatch();
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [show, setShow] = useState(false);
 
   const {
@@ -43,14 +43,7 @@ const AuthScreen = ({ navigation }) => {
   
 
 
-  useEffect(() => {
-    // Configure Google Sign-In only once
-  GoogleSignin.configure({
-    
-  webClientId: '361231391535-ibpuch34kqb7nc0imovbqrmminar6g2i.apps.googleusercontent.com', // from Firebase console
-   offlineAccess: true,
-});
-  }, []);
+const emailHintRef = useRef(null);
 
 
 const scrollRef = useRef(null);
@@ -164,6 +157,20 @@ const scrollToInput = (y = 0) => {
   }, 100);
 };
 
+const getPasswordStrength = (password: string) => {
+  let score = 0;
+
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { label: 'Weak', color: '#ef4444', level: 1 };
+  if (score === 2 || score === 3)
+    return { label: 'Medium', color: '#f59e0b', level: 2 };
+  return { label: 'Strong', color: '#22c55e', level: 3 };
+};
+
   return (
    <SafeAreaView style={styles.container}>
   <KeyboardAvoidingView
@@ -253,32 +260,102 @@ const scrollToInput = (y = 0) => {
             </View>
             {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
 
-            {/* Password Input */}
-            <View style={styles.inputContainer}>
-              <Icon name="lock" size={20} color="#9ca3af" />
-              <Controller
-                control={control}
-                name="password"
-                rules={{
-                  required: 'Password is required',
-                  minLength: { value: 6, message: 'Password must be at least 6 characters' },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Password"
-                    placeholderTextColor="#9ca3af"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                  secureTextEntry={!show}
-                    onFocus={() => scrollToInput(220)}
-                  />
-                )}
-              />
-             <TouchableOpacity onPress={()=>setShow(!show)}><Icon name={show?'eye':'eye-off'} size={24}/></TouchableOpacity>
+    <View>
+  <View style={styles.inputContainer}>
+    <Icon name="lock" size={20} color="#9ca3af" />
+
+    <Controller
+      control={control}
+      name="password"
+      rules={{
+        required: 'Password is required',
+        minLength: { value: 6, message: 'Minimum 8 characters required' },
+      }}
+      render={({ field: { onChange, onBlur, value = '' } }) => {
+        const strength = getPasswordStrength(value);
+
+        return (
+          <>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Password"
+              placeholderTextColor="#9ca3af"
+              secureTextEntry={!show}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              onFocus={() => scrollToInput(220)}
+            />
+
+            <TouchableOpacity onPress={() => setShow(!show)}>
+              <Icon name={show ? 'eye' : 'eye-off'} size={22} />
+            </TouchableOpacity>
+          </>
+        );
+      }}
+    />
+  </View>
+
+  {/* ✅ Strength Meter ONLY for signup */}
+  {isSignUp && (
+    <Controller
+      control={control}
+      name="password"
+      render={({ field: { value = '' } }) => {
+        if (!value) return null;
+
+        const strength = getPasswordStrength(value);
+
+        return (
+          <View style={styles.strengthContainer}>
+            <View style={styles.barRow}>
+              {[1, 2, 3].map(i => (
+                <View
+                  key={i}
+                  style={[
+                    styles.strengthBar,
+                    {
+                      backgroundColor:
+                        strength.level >= i ? strength.color : '#e5e7eb',
+                    },
+                  ]}
+                />
+              ))}
             </View>
+
+            <Text style={[styles.strengthText, { color: strength.color }]}>
+              {strength.label} password
+            </Text>
+
+            <View style={styles.rules}>
+              <Rule text="At least 8 characters" ok={value.length >= 8} />
+              <Rule text="One uppercase letter" ok={/[A-Z]/.test(value)} />
+              <Rule text="One number" ok={/[0-9]/.test(value)} />
+              <Rule
+                text="One special character"
+                ok={/[^A-Za-z0-9]/.test(value)}
+              />
+            </View>
+          </View>
+        );
+      }}
+    />
+  )}
+</View>
+
+
             {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+{/* Forgot Password (Login only) */}
+{!isSignUp && (
+  <TouchableOpacity
+    onPress={() => navigation.navigate(AuthStackRoutes.ForgotPassword)}
+    style={styles.forgotPasswordContainer}
+  >
+    <Text style={styles.forgotPasswordText}>
+      Forgot Password?
+    </Text>
+  </TouchableOpacity>
+)}
 
             {/* Submit Button */}
             <TouchableOpacity
@@ -334,8 +411,55 @@ const scrollToInput = (y = 0) => {
     </SafeAreaView>
   );
 };
+const Rule = ({ text, ok }: { text: string; ok: boolean }) => (
+  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+    <Icon
+      name={ok ? 'check-circle' : 'close-circle'}
+      size={14}
+      color={ok ? '#22c55e' : '#9ca3af'}
+    />
+    <Text
+      style={{
+        marginLeft: 6,
+        fontSize: 12,
+        color: ok ? '#22c55e' : '#6b7280',
+      }}
+    >
+      {text}
+    </Text>
+  </View>
+);
+
 
 const styles = StyleSheet.create({
+  strengthContainer: {
+  marginTop: 6,
+
+  marginBottom: 8,
+},
+
+barRow: {
+  flexDirection: 'row',
+  gap: 6,
+  marginBottom: 6,
+},
+
+strengthBar: {
+  flex: 1,
+  height: 5,
+  borderRadius: 6,
+},
+
+strengthText: {
+  fontSize: 12,
+  fontWeight: '600',
+   marginTop: 4,
+},
+
+rules: {
+  marginTop: 6,
+},
+
   container: { flex: 1, backgroundColor: '#f9fafb' },
   scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   logoContainer: { alignItems: 'center', marginBottom: 20 },
@@ -386,6 +510,18 @@ const styles = StyleSheet.create({
   signInContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 32 },
   signInText: { fontSize: 16, color: '#6b7280' },
   signInLink: { fontSize: 16, color: '#3b82f6', fontWeight: '600' },
+  forgotPasswordContainer: {
+  alignSelf: 'flex-end',
+  marginBottom: 12,
+  marginTop: 4,
+},
+
+forgotPasswordText: {
+  color: Colors.darkBlueP1,
+  fontSize: 14,
+  fontWeight: '500'
+},
+
 });
 
 export default AuthScreen;

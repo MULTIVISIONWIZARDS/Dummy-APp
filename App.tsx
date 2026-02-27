@@ -9,16 +9,32 @@ import Toast from 'react-native-toast-message';
 import toastConfig from './src/utils/toastConfig';
 import Colors from './src/constants/Colors';
 import 'react-native-get-random-values';
-
+import { SocketProvider } from './src/context/SocketContext';
+import { enableScreens } from 'react-native-screens';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+enableScreens(true); 
 const App = () => {
+  const linking = {
+  prefixes: ["myapp://","https://vintagecms.cloud"],
+  config: {
+    screens: {
+      PaymentSuccess: "payment-success",
+      PaymentCancel: "payment-cancel",
+    },
+  },
+};
   return (
     <Provider store={store}>
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
-        <NavigationContainer>
+      <SafeAreaProvider>
+      <SocketProvider>
+        <NavigationContainer linking={linking}>
          <StatusBar backgroundColor={Colors.statusBarP1} barStyle={Colors.statusBarP1Theme} />
           <AppNavigator />
            <Toast config={toastConfig}/>
         </NavigationContainer>
+        </SocketProvider>
+        </SafeAreaProvider>
       </PersistGate>
     </Provider>
   );

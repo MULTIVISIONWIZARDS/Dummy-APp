@@ -139,9 +139,9 @@ function MainTabs() {
 
 export default function AppNavigator() {
         const isConnected = useNetworkStatus();
-  if (!isConnected) {
-    return <NoInternetScreen/>;
-  }
+  // if (!isConnected) {
+  //   return <NoInternetScreen/>;
+  // }
   return (
     <SafeAreaProvider>
       <Stack.Navigator 

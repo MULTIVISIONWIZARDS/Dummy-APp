@@ -51,7 +51,7 @@ const TermsScreen = () => {
 
   <Text
     style={styles.linkItem}
-    onPress={() => Linking.openURL('https://multivisionwizards.com/privacy')}
+    onPress={() => Linking.openURL('https://vintagecms.cloud/privacy-policy.html')}
   >
     🔒 Privacy Policy
   </Text>
@@ -60,7 +60,7 @@ const TermsScreen = () => {
 
   <Text
     style={styles.linkItem}
-    onPress={() => Linking.openURL('https://multivisionwizards.com/terms')}
+    onPress={() => Linking.openURL('https://vintagehealthbody.com/')}
   >
     📄 Terms & Conditions
   </Text>

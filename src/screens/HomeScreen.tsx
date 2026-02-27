@@ -392,6 +392,8 @@ import { AuthStackRoutes, MainTabRoutes } from "../navigation/Routes";
 import VideoCarousel from "../components/VideoPlayer";
 import { LogBox } from 'react-native';
 import PatientTestimonial from "./PatientTestimonial";
+import API from "../utils/apiClient";
+import SettingsScreen from "./ProfileTab/SettingsScreen";
 
 LogBox.ignoreLogs(['Text strings must be rendered within a <Text> component']);
 
@@ -404,23 +406,26 @@ const HomeScreen: React.FC<any> = () => {
   const navigation = useNavigation();
 
   // 🔹 load subscription
-  const checkSubscription = async () => {
-    try {
-      const data = await AsyncStorage.getItem("subscriptionDetails");
-      if (data) {
-        const subscription = JSON.parse(data);
-        const now = new Date();
-        const expiry = new Date(subscription.expiryDate);
-        if (expiry > now) {
-          setHasSubscription(true);
-        } else {
-          setHasSubscription(false);
-        }
-      }
-    } catch (e) {
-      console.log("Error loading subscription:", e);
+const checkSubscription = async () => {
+  try {
+    const res = await API.get("/subscriptions/my-subscription");
+
+    if (res.data?.success && res.data?.data) {
+      const { isActive, endDate } = res.data.data;
+
+      const now = new Date();
+      const expiry = new Date(endDate);
+
+      setHasSubscription(isActive && expiry > now);
+    } else {
+      setHasSubscription(false);
     }
-  };
+  } catch (error) {
+    console.log("Subscription API error:", error);
+    setHasSubscription(false);
+  }
+};
+
 
   // 🔹 load chat count
   const loadChatCount = async () => {
@@ -495,7 +500,7 @@ const banner = [
         />
         <MoodTracker />
         <WellnessShowcase />
-
+         <SettingsScreen hasSubscription={hasSubscription}/>
       
         {/* {!hasSubscription && <SubscriptionScreen />}
          */}
