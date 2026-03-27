@@ -13,8 +13,7 @@ import { SocketProvider } from './src/context/SocketContext';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 enableScreens(true); 
-const App = () => {
-  const linking = {
+ const linking = {
   prefixes: ["myapp://","https://vintagecms.cloud"],
   config: {
     screens: {
@@ -23,6 +22,8 @@ const App = () => {
     },
   },
 };
+const App = () => {
+ 
   return (
     <Provider store={store}>
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>

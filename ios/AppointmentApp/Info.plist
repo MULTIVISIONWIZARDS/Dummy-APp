@@ -29,65 +29,105 @@
     <key>UIAppFonts</key>
     <array>
         <string>MaterialCommunityIcons.ttf</string>
-         <string>Feather.ttf</string>
-         <string>MaterialIcons.ttf</string>
-          <string>Ionicons.ttf</string>
+        <string>Feather.ttf</string>
+        <string>MaterialIcons.ttf</string>
+        <string>Ionicons.ttf</string>
     </array>
 
     <!-- New Architecture -->
     <key>RCTNewArchEnabled</key>
     <true/>
 
-    <!-- App Transport Security -->
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <false/>
-        <key>NSAllowsLocalNetworking</key>
-        <true/>
-    </dict>
-<!-- Deep Linking: Custom URL Scheme -->
-<key>CFBundleURLTypes</key>
-<array>
-  <dict>
-    <key>CFBundleURLName</key>
-    <string>com.vintageappointment</string>
-    <key>CFBundleURLSchemes</key>
+    <!-- Deep Linking: Custom URL Scheme -->
+    <key>CFBundleURLTypes</key>
     <array>
-      <string>myapp</string>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.vintageappointment</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>myapp</string>
+            </array>
+        </dict>
     </array>
-  </dict>
-</array>
 
+    <!-- ⚠️ IMPORTANT: App Store Review Guidelines - Permission Descriptions -->
+    <!-- These descriptions must clearly explain WHY you need each permission -->
+    
     <key>NSCameraUsageDescription</key>
-<string>Camera access is required for video consultations and profile photos.</string>
+    <string>$(PRODUCT_NAME) uses camera for video consultations with healthcare providers and for profile photos. Video calls are encrypted and not recorded.</string>
 
     <key>NSMicrophoneUsageDescription</key>
-<string>Microphone access is required for audio during video consultations.</string>
-    <key>NSLocalNetworkUsageDescription</key>
-<string>This app uses the local network for real-time video consultations</string>
+    <string>$(PRODUCT_NAME) uses microphone for audio during live video consultations with healthcare providers. All audio is encrypted in transit.</string>
 
     <key>NSPhotoLibraryUsageDescription</key>
-   
-    <string>Photo access is required to choose a profile picture.</string>
+    <string>$(PRODUCT_NAME) accesses photo library only when you choose to upload a profile picture. Photos are not accessed without your permission.</string>
 
-    <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
+    <!-- Agora Video SDK Required Permissions -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>$(PRODUCT_NAME) uses local network to establish peer-to-peer video connections for better quality consultations. This helps reduce latency during video calls.</string>
+
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_agora._udp</string>
+        <string>_agora_local._tcp</string>
+    </array>
+
+    <!-- ⚠️ App Transport Security - MUST be configured properly for App Store -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <!-- Don't use NSAllowsArbitraryLoads=true for production apps -->
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        
+        <!-- Allow specific Agora domains -->
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>agora.io</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/> <!-- Keep this false, use HTTPS -->
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <false/>
+            </dict>
+            <key>edge.agora.io</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+            </dict>
+        </dict>
+    </dict>
+
+    <!-- ⚠️ Background Modes - Be specific and minimal -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>audio</string> <!-- Required to continue audio when app is backgrounded -->
+        <!-- Remove 'voip' unless you're actually building a VoIP app -->
+    </array>
+
+    <!-- Required Device Capabilities -->
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>arm64</string>
+        <string>video-camera</string> <!-- Explicitly require video camera -->
     </array>
-    <key>NSBonjourServices</key>
-<array>
-  <string>_agora._udp</string>
-  <string>_agora._tcp</string>
-</array>
+
+    <!-- Launch Screen -->
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+
+    <!-- Supported Orientations -->
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
 </dict>

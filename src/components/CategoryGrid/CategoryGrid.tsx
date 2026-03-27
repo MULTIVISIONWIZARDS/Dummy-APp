@@ -3018,18 +3018,276 @@
 //     fontWeight: "bold",
 //   },
 // });
-// 
+// // 
+// import React, { useState, useEffect } from 'react';
+// import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+// import Colors from '../../constants/Colors';
+// import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+// import Tooltip from "react-native-walkthrough-tooltip";
+// import API from '../../utils/apiClient'; // your axios instance
+
+// const NUM_COLUMNS = 4;
+
+// // Map known category titles to icons
+// const ICON_MAP: Record<string, string> = {
+//   "Fitness": "dumbbell",
+//   "Diet": "food-apple",
+//   "Game": "gamepad-variant",
+//   "Sukoon": "emoticon-happy-outline",
+//   "Wellness": "heart-pulse",
+//   "Nature": "pine-tree",
+//   "Yoga": "yoga",
+//   "GYM": "weight-lifter",
+//   "Meditation": "meditation",
+//   "Mindfulness": "brain",
+//   "Sleep": "sleep",
+//   "Hydration": "cup-water",
+//   "Nutrition": "food-croissant",
+//   "Exercise": "run",
+//   "Cardio": "heart-outline",
+//   "Strength": "arm-flex",
+//   "Mental Health": "account-heart",
+//   "Stress Relief": "emoticon-cool-outline",
+//   "Relaxation": "spa",
+//   "Spa": "spa-outline",
+//   "Self-Care": "human-handsup",
+//   "Motivation": "lightbulb-on-outline",
+//   "Outdoor": "pine-tree",
+//   "Adventure": "hiking",
+//   "Hobby": "palette",
+//   "Reading": "book-open-page-variant",
+//   "Music": "music-note-outline",
+//   "Creativity": "pencil-outline",
+//   "Social": "account-group-outline",
+//   "Love": "heart",
+//   "Energy": "flash",
+//   "Balance": "scale-balance",
+//   "Immunity": "shield-cross",
+//   "Clean Eating": "food-apple-outline",
+//   "Relax": "beach",
+// };
+
+// // Fallback icons if title is missing or unknown
+// const FALLBACK_ICONS = [
+//   "star",
+//   "leaf",
+//   "lightbulb-on-outline",
+//   "run",
+//   "meditation",
+//   "umbrella",
+//   "account-heart",
+// ];
+
+
+// export default function CategoryGrid({ onPressItem }: { onPressItem?: (item: any) => void }) {
+//   const [data, setData] = useState<any[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [tooltipId, setTooltipId] = useState<string | null>(null);
+
+
+// useEffect(() => {
+//   let mounted = true;
+
+//   const fetchCategories = async () => {
+//     try {
+//       setLoading(true);
+//       const res = await API.get('/categories');
+
+//       if (!mounted) return;
+
+//       if (res.data?.success && Array.isArray(res.data.data)) {
+//         // setData(res.data.data);
+//         setData(Array.isArray(res.data?.data) ? res.data.data : []);
+
+//       } else {
+//         setData([]);
+//       }
+//     } 
+//     catch (err: any) {
+//   console.log("❌ Category API error:", err?.response?.data || err?.message || err);
+//   setData([]);
+// }
+// finally {
+//       if (mounted) setLoading(false);
+//     }
+//   };
+
+//   fetchCategories();
+//   return () => {
+//     mounted = false;
+//   };
+// }, []);
+
+//   // useEffect(() => {
+//   //   const fetchCategories = async () => {
+//   //     try {
+//   //       setLoading(true);
+//   //       const res = await API.get('/categories'); // fetch from backend
+//   //       console.log("::::::::::res::::::",res);
+        
+//   //       if (res.data.success) setData(res.data.data);
+//   //       else console.log('Failed to fetch categories:', res.data.message);
+//   //     } catch (error: any) {
+//   //       console.log('Error fetching categories:', error.message);
+//   //     } finally {
+//   //       setLoading(false);
+//   //     }
+//   //   };
+//   //   fetchCategories();
+//   // }, []);
+
+//   const handlePress = (item: any) => {
+//     onPressItem?.(item);
+//     setData(prev => prev.map(x => x._id === item._id ? { ...x, hasUpdate: false } : x));
+//   };
+
+//   const getIconName = (item: any) => {
+//     const title = item.title?.trim();
+//     if (title && ICON_MAP[title]) return ICON_MAP[title];
+
+//     // fallback: pick one based on hash of title
+//     if (title) {
+//       const index = title.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % FALLBACK_ICONS.length;
+//       return FALLBACK_ICONS[index];
+//     }
+
+//     return "help-circle-outline"; // final fallback
+//   };
+
+//   const renderItem = ({ item }: { item: any }) => (
+//     <Tooltip
+//       // isVisible={tooltipId === item.id}
+//       isVisible={tooltipId === item._id}
+//       content={<Text style={{ color: "#000000ff" }}>{`Learn more about ${item.title}`}</Text>}
+//       placement="top"
+//       onClose={() => setTooltipId(null)}
+//       backgroundColor="rgba(0,0,0,0.4)"
+//       showChildInTooltip={false}
+//     >
+//       <TouchableOpacity
+//         style={styles.cardWrapper}
+//         onPress={() => handlePress(item)}
+//         // onLongPress={() => setTooltipId(item.id)}
+//         onLongPress={() => setTooltipId(item._id)}
+//         delayLongPress={300}
+//         activeOpacity={0.8}
+//       >
+//         <View style={[styles.card, { backgroundColor: item.color || Colors.primary }]}>
+//           <Icon name={getIconName(item)} size={42} color="white" />
+//           {item.hasUpdate && (
+//             <View style={styles.updateBadge}>
+//               <Text style={styles.updateText}>New</Text>
+//             </View>
+//           )}
+//         </View>
+//         <Text numberOfLines={1} style={styles.cardText}>{item.title}</Text>
+//       </TouchableOpacity>
+//     </Tooltip>
+//   );
+
+//   const renderSkeletonj = () => {
+//     const totalItems = 8;
+//     const skeletonRows = [];
+
+//     skeletonRows.push(
+//       <SkeletonPlaceholder key="header">
+//         <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
+//       </SkeletonPlaceholder>
+//     );
+
+//     for (let i = 0; i < totalItems; i += NUM_COLUMNS) {
+//       skeletonRows.push(
+//         <View key={i} style={styles.row}>
+//           {Array.from({ length: NUM_COLUMNS }).map((_, index) => (
+//             <View key={index} style={styles.cardWrapper}>
+//               <SkeletonPlaceholder>
+//                 <View style={styles.card} />
+//                 <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
+//               </SkeletonPlaceholder>
+//             </View>
+//           ))}
+//         </View>
+//       );
+//     }
+
+//     return skeletonRows;
+//   };
+//   const renderSkeleton = () => {
+//   const totalItems = 8;
+
+//   return (
+//     <>
+//       <SkeletonPlaceholder key="skeleton-header">
+//         <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
+//       </SkeletonPlaceholder>
+
+//       {Array.from({ length: totalItems / NUM_COLUMNS }).map((_, rowIndex) => (
+//         <View key={`skeleton-row-${rowIndex}`} style={styles.row}>
+//           {Array.from({ length: NUM_COLUMNS }).map((__, colIndex) => (
+//             <View key={`skeleton-cell-${rowIndex}-${colIndex}`} style={styles.cardWrapper}>
+//               <SkeletonPlaceholder>
+//                 <View style={styles.card} />
+//                 <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
+//               </SkeletonPlaceholder>
+//             </View>
+//           ))}
+//         </View>
+//       ))}
+//     </>
+//   );
+// };
+
+
+//   return (
+//     <View style={styles.container}>
+//       {loading ? renderSkeleton() : (
+//         <>
+//  {Array.isArray(data) && data.length > 0 && (
+//   <Text style={styles.headerTitle}>Daily Wellness</Text>
+// )}
+
+//           <FlatList
+//             data={Array.isArray(data) ? data : []}
+//             // keyExtractor={i => i._id}
+//             keyExtractor={(item, index) => item._id ?? String(index)}
+
+//               // keyExtractor={item => item.id}
+//             renderItem={renderItem}
+//             numColumns={NUM_COLUMNS}
+//             scrollEnabled={false}
+//             columnWrapperStyle={styles.row}
+//             extraData={tooltipId}
+//           />
+//         </>
+//       )}
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: { padding: 12, backgroundColor: '#fff' },
+//   headerTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
+//   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
+//   cardWrapper: { flex: 1 / NUM_COLUMNS, marginHorizontal: 4, alignItems: 'center' },
+//   card: { width: 70, height: 70, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
+//   cardText: { fontSize: 12, fontWeight: '600', color: Colors.grayPRI, textAlign: 'center' },
+//   updateBadge: { position: 'absolute', top: -4, right: -4, backgroundColor: '#FF3B30', borderRadius: 8, paddingHorizontal: 5, paddingVertical: 2 },
+//   updateText: { color: 'white', fontSize: 10, fontWeight: 'bold' },
+// });
+
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../constants/Colors';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Tooltip from "react-native-walkthrough-tooltip";
-import API from '../../utils/apiClient'; // your axios instance
+import API from '../../utils/apiClient';
 
 const NUM_COLUMNS = 4;
 
-// Map known category titles to icons
+// Enhanced icon map with more unique icons
 const ICON_MAP: Record<string, string> = {
   "Fitness": "dumbbell",
   "Diet": "food-apple",
@@ -3044,7 +3302,7 @@ const ICON_MAP: Record<string, string> = {
   "Sleep": "sleep",
   "Hydration": "cup-water",
   "Nutrition": "food-croissant",
-  "Exercise": "run",
+  "Exercise": "run", // Changed from dumbbell to run
   "Cardio": "heart-outline",
   "Strength": "arm-flex",
   "Mental Health": "account-heart",
@@ -3066,9 +3324,13 @@ const ICON_MAP: Record<string, string> = {
   "Immunity": "shield-cross",
   "Clean Eating": "food-apple-outline",
   "Relax": "beach",
+  "Hormones": "dna", // Added hormones
+  "Supplements": "pill", // Added supplements
+  "Stress": "brain", // Added stress
+  // "Mindfulness": "meditation", // Added mindfulness
 };
 
-// Fallback icons if title is missing or unknown
+// Fallback icons with variety
 const FALLBACK_ICONS = [
   "star",
   "leaf",
@@ -3077,65 +3339,438 @@ const FALLBACK_ICONS = [
   "meditation",
   "umbrella",
   "account-heart",
+  "dumbbell",
+  "food-apple",
+  "heart-pulse",
+  "sleep",
+  "cup-water",
 ];
 
 
-export default function CategoryGrid({ onPressItem }: { onPressItem?: (item: any) => void }) {
-  const [data, setData] = useState<any[]>([]);
+const DEFAULT_CATEGORIES = [
+  {
+    id: '1',
+    title: 'Diet',
+    icon: 'food-apple',
+    color: '#34d399ff',
+    hasUpdate: true,
+    description: 'Balanced nutrition fuels your energy and overall health.',
+    detailedContent: `Diet: The Foundation of Health...`,
+    subcategories: [
+      {
+        id: "1-1",
+        title: "Balanced Diet",
+        image: "https://westernnews.media.clients.ellingtoncms.com/img/photos/2018/08/09/Balanced-Diet.jpg",
+        shortDescription: "Fuel your energy & overall health.",
+        detailedContent: [
+          "Include all food groups in proper proportion.",
+          "Focus on whole grains, lean protein, healthy fats.",
+          "Eat colorful vegetables & fruits daily.",
+          "Stay hydrated: 2-3 liters per day.",
+        ],
+      },
+      {
+        id: "1-2",
+        title: "Keto Diet",
+        image: "https://img.freepik.com/free-photo/keto-diet-food_1098-18623.jpg",
+        shortDescription: "Low carb, high fat for energy & weight control.",
+        detailedContent: [
+          "High fats, moderate proteins, very low carbs.",
+          "Good for insulin sensitivity & fat loss.",
+          "Avoid sugars & processed carbs.",
+          "Include healthy fats: avocado, nuts, olive oil.",
+        ],
+      },
+      {
+        id: "1-3",
+        title: "Vegetarian Diet",
+        image: "https://images.unsplash.com/photo-1543353071-873f17a7a088",
+        shortDescription: "Plant-based nutrition for immunity & energy.",
+        detailedContent: [
+          "Include legumes, tofu, lentils, and dairy.",
+          "Ensure sufficient protein & iron.",
+          "Eat diverse colorful vegetables.",
+          "Combine with nuts & seeds for healthy fats.",
+        ],
+      },
+      {
+        id: "1-4",
+        title: "Vegan Diet",
+        image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+        shortDescription: "Strictly plant-based for optimal health.",
+        detailedContent: [
+          "Eliminate all animal products.",
+          "Ensure protein and vitamin B12 intake.",
+          "Focus on grains, legumes, nuts, seeds, vegetables.",
+          "Consider fortified foods or supplements.",
+        ],
+      },
+      {
+        id: "1-5",
+        title: "Mediterranean Diet",
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+        shortDescription: "Heart-healthy diet rich in fruits, vegetables, & olive oil.",
+        detailedContent: [
+          "Emphasizes olive oil, fish, nuts, fruits, vegetables.",
+          "Supports longevity and heart health.",
+          "Moderate intake of dairy and lean meats.",
+          "Balanced and sustainable lifestyle diet.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '2',
+    title: 'Exercise',
+    icon: 'dumbbell',
+    color: '#3b82f6ff',
+    description: 'Regular movement improves strength, mood, and longevity.',
+    detailedContent: `Exercise: Movement as Medicine...`,
+    subcategories: [
+      {
+        id: "2-1",
+        title: "Cardio",
+        image: "https://images.unsplash.com/photo-1554284126-cc0d2d6d3f05",
+        shortDescription: "Running, cycling, swimming for heart health.",
+        detailedContent: [
+          "Improves cardiovascular endurance.",
+          "Burns calories and boosts metabolism.",
+          "Enhances lung capacity and stamina.",
+        ],
+      },
+      {
+        id: "2-2",
+        title: "Strength Training",
+        image: "https://images.unsplash.com/photo-1594737625785-8a73b3f61dff",
+        shortDescription: "Weight lifting and resistance exercises.",
+        detailedContent: [
+          "Builds muscle and bone strength.",
+          "Improves posture and functional fitness.",
+          "Boosts metabolism and fat loss.",
+        ],
+      },
+      {
+        id: "2-3",
+        title: "Flexibility & Mobility",
+        image: "https://images.unsplash.com/photo-1594737625678-7f3b9b3f5f0d",
+        shortDescription: "Yoga, stretching, and mobility exercises.",
+        detailedContent: [
+          "Maintains range of motion.",
+          "Reduces risk of injury.",
+          "Improves circulation and posture.",
+        ],
+      },
+      {
+        id: "2-4",
+        title: "HIIT",
+        image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1",
+        shortDescription: "High-Intensity Interval Training for fat burn & endurance.",
+        detailedContent: [
+          "Short bursts of intense activity.",
+          "Efficient calorie burn in less time.",
+          "Improves cardiovascular fitness.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '3',
+    title: 'Hormones',
+    icon: 'dna',
+    color: '#a855f7ff',
+    description: 'Hormones regulate mood, energy, sleep, and metabolism.',
+    detailedContent: `Hormones: Your Body's Chemical Messengers...`,
+    subcategories: [
+      {
+        id: "3-1",
+        title: "Insulin",
+        image: "https://images.unsplash.com/photo-1588776814546-7f92d889e230",
+        shortDescription: "Regulates blood sugar & fat storage.",
+        detailedContent: [
+          "Maintains blood glucose levels.",
+          "Supports energy utilization.",
+          "Works with diet and exercise for metabolic health.",
+        ],
+      },
+      {
+        id: "3-2",
+        title: "Cortisol",
+        image: "https://images.unsplash.com/photo-1588776814520-8c74fabe11d1",
+        shortDescription: "Stress hormone affecting metabolism & immunity.",
+        detailedContent: [
+          "Elevated during stress.",
+          "Influences fat storage & energy use.",
+          "Needs balance for overall health.",
+        ],
+      },
+      {
+        id: "3-3",
+        title: "Thyroid Hormones",
+        image: "https://images.unsplash.com/photo-1593529467227-71a8872e87e8",
+        shortDescription: "Regulate metabolism and energy production.",
+        detailedContent: [
+          "Control basal metabolic rate.",
+          "Influence weight, energy, and temperature regulation.",
+          "Support growth and development.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '4',
+    title: 'Supplements',
+    icon: 'pill',
+    color: '#f59e0bff',
+    description: 'Smart supplementation supports diet and lifestyle.',
+    detailedContent: `Supplements: Filling the Gaps Wisely...`,
+    subcategories: [
+      {
+        id: "4-1",
+        title: "Vitamin D3",
+        image: "https://images.unsplash.com/photo-1588776814550-1c1b0a5a6b44",
+        shortDescription: "Supports bone health, immune function, and mood.",
+        detailedContent: [
+          "Most people are deficient.",
+          "Take with healthy fats for absorption.",
+          "Helps maintain strong bones.",
+        ],
+      },
+      {
+        id: "4-2",
+        title: "Omega-3",
+        image: "https://images.unsplash.com/photo-1588776814522-5cda82707aef",
+        shortDescription: "Supports brain and heart health.",
+        detailedContent: [
+          "Anti-inflammatory benefits.",
+          "Supports heart and brain function.",
+          "Found in fatty fish, flax, chia seeds.",
+        ],
+      },
+      {
+        id: "4-3",
+        title: "Probiotics",
+        image: "https://images.unsplash.com/photo-1588776814518-7f4a0a9b8eae",
+        shortDescription: "Supports gut health and immunity.",
+        detailedContent: [
+          "Helps maintain healthy gut microbiome.",
+          "Supports digestion and immunity.",
+          "Found in yogurt, kefir, fermented foods.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '5',
+    title: 'Sleep',
+    icon: 'bed',
+    color: '#0ea5e9ff',
+    description: 'Deep rest restores body and mind for peak performance.',
+    detailedContent: `Sleep: Your Daily Reset Button...`,
+    subcategories: [
+      {
+        id: "5-1",
+        title: "Deep Sleep",
+        image: "https://images.unsplash.com/photo-1588776814540-2d9a6a89e22c",
+        shortDescription: "Restorative sleep for body repair and immunity.",
+        detailedContent: [
+          "Stage 3 of sleep cycle.",
+          "Supports physical restoration.",
+          "Boosts immune function and memory.",
+        ],
+      },
+      {
+        id: "5-2",
+        title: "REM Sleep",
+        image: "https://images.unsplash.com/photo-1588776814543-1e5f7c5d3e8b",
+        shortDescription: "Dream stage for memory consolidation and brain detox.",
+        detailedContent: [
+          "Rapid eye movement stage.",
+          "Essential for learning and memory.",
+          "Promotes mental health and emotional processing.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '6',
+    title: 'Stress',
+    icon: 'brain',
+    color: '#f43f5eff',
+    description: 'Chronic stress drains health—learn to reset and recharge.',
+    detailedContent: `Stress: Understanding and Managing Your Body's Alarm System...`,
+    subcategories: [
+      {
+        id: "6-1",
+        title: "Acute Stress",
+        image: "https://images.unsplash.com/photo-1588776814524-3d5e8c2f3f7a",
+        shortDescription: "Short-term stress response.",
+        detailedContent: [
+          "Immediate response to challenges.",
+          "Can improve focus and reaction time.",
+          "Usually temporary and manageable.",
+        ],
+      },
+      {
+        id: "6-2",
+        title: "Chronic Stress",
+        image: "https://images.unsplash.com/photo-1588776814525-4f3d9c4e5b6a",
+        shortDescription: "Long-term stress impacting health.",
+        detailedContent: [
+          "Leads to hormonal imbalance.",
+          "Affects sleep, metabolism, and immunity.",
+          "Needs active management strategies.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '7',
+    title: 'Mindfulness',
+    icon: 'meditation',
+    color: '#14b8a6ff',
+    description: 'Stay present, reduce anxiety, and increase focus.',
+    detailedContent: `Mindfulness: The Art of Present Moment Awareness...`,
+    subcategories: [
+      {
+        id: "7-1",
+        title: "Breathing Meditation",
+        image: "https://images.unsplash.com/photo-1588776814526-6e5b9c7f8c6d",
+        shortDescription: "Focus on breath to calm the mind.",
+        detailedContent: [
+          "Conscious awareness of inhalation & exhalation.",
+          "Reduces stress and anxiety.",
+          "Can be done anytime, anywhere.",
+        ],
+      },
+      {
+        id: "7-2",
+        title: "Body Scan",
+        image: "https://images.unsplash.com/photo-1588776814527-7f6a8c8f9d7e",
+        shortDescription: "Notice sensations throughout the body.",
+        detailedContent: [
+          "Enhances body awareness.",
+          "Promotes relaxation and stress reduction.",
+          "Helps release tension areas.",
+        ],
+      },
+    ],
+  },
+  {
+    id: '8',
+    title: 'Hydration',
+    icon: 'cup-water',
+    color: '#60a5faff',
+    description: 'Water fuels your cells, organs, and brain function.',
+    detailedContent: `Hydration: The Foundation of Life...`,
+    subcategories: [
+      {
+        id: "8-1",
+        title: "Daily Water Intake",
+        image: "https://images.unsplash.com/photo-1588776814528-8f7b9c9e0a8f",
+        shortDescription: "Maintain optimal hydration throughout the day.",
+        detailedContent: [
+          "Drink 2-3 liters daily depending on activity.",
+          "Monitor urine color for hydration status.",
+          "Avoid excessive sugary drinks.",
+        ],
+      },
+      {
+        id: "8-2",
+        title: "Electrolyte Balance",
+        image: "https://images.unsplash.com/photo-1588776814529-9f8c9d0b1b9a",
+        shortDescription: "Maintain sodium, potassium & magnesium levels.",
+        detailedContent: [
+          "Important during exercise or heat.",
+          "Supports muscle function & hydration.",
+          "Include natural sources like fruits, veggies, and salts.",
+        ],
+      },
+    ],
+  },
+];
+
+interface Category {
+  _id?: string;
+  id?: string;
+  title: string;
+  color?: string;
+  icon?: string;
+  hasUpdate?: boolean;
+}
+
+export default function CategoryGrid({ onPressItem, forceRefresh }: { onPressItem?: (item: any) => void, forceRefresh?: boolean }) {
+  const [data, setData] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [tooltipId, setTooltipId] = useState<string | null>(null);
-
-
-useEffect(() => {
-  let mounted = true;
 
   const fetchCategories = async () => {
     try {
       setLoading(true);
+      setError(false);
+      
       const res = await API.get('/categories');
+      console.log("📡 Category API response:", res.data);
 
-      if (!mounted) return;
-
-      if (res.data?.success && Array.isArray(res.data.data)) {
-        // setData(res.data.data);
-        setData(Array.isArray(res.data?.data) ? res.data.data : []);
-
+      if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+        // Map API data to include unique icons
+        const formattedData = res.data.data.map((item: any, index: number) => ({
+          ...item,
+          icon: getIconForTitle(item.title),
+          color: getColorForIndex(index),
+        }));
+        setData(formattedData);
+        console.log("✅ Categories loaded from API:", formattedData.length);
       } else {
-        setData([]);
+        console.log("⚠️ No categories from API, using default categories");
+        setError(true);
+        setData(DEFAULT_CATEGORIES);
       }
-    } 
-    catch (err: any) {
-  console.log("❌ Category API error:", err?.response?.data || err?.message || err);
-  setData([]);
-}
-finally {
-      if (mounted) setLoading(false);
+    } catch (err: any) {
+      console.log("❌ Category API error:", err?.response?.data || err?.message || err);
+      setError(true);
+      setData(DEFAULT_CATEGORIES);
+    } finally {
+      setLoading(false);
     }
   };
 
-  fetchCategories();
-  return () => {
-    mounted = false;
+  const getIconForTitle = (title: string): string => {
+    const trimmedTitle = title?.trim();
+    if (trimmedTitle && ICON_MAP[trimmedTitle]) {
+      return ICON_MAP[trimmedTitle];
+    }
+    
+    // Fallback: generate consistent icon based on title
+    if (trimmedTitle) {
+      const index = trimmedTitle.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % FALLBACK_ICONS.length;
+      return FALLBACK_ICONS[index];
+    }
+    
+    return "help-circle-outline";
   };
-}, []);
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const res = await API.get('/categories'); // fetch from backend
-  //       console.log("::::::::::res::::::",res);
-        
-  //       if (res.data.success) setData(res.data.data);
-  //       else console.log('Failed to fetch categories:', res.data.message);
-  //     } catch (error: any) {
-  //       console.log('Error fetching categories:', error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchCategories();
-  // }, []);
+  const getColorForIndex = (index: number): string => {
+    const colors = [
+      Colors.primary || '#3B82F6',
+      '#4ECDC4',
+      '#45B7D1',
+      '#96CEB4',
+      '#FFEAA7',
+      '#DDA0DD',
+      '#98D8C8',
+      '#F7B05E',
+      '#A855F7',
+      '#F59E0B',
+      '#F43F5E',
+      '#14B8A6',
+    ];
+    return colors[index % colors.length];
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [forceRefresh]);
 
   const handlePress = (item: any) => {
     onPressItem?.(item);
@@ -3143,22 +3778,19 @@ finally {
   };
 
   const getIconName = (item: any) => {
-    const title = item.title?.trim();
-    if (title && ICON_MAP[title]) return ICON_MAP[title];
-
-    // fallback: pick one based on hash of title
-    if (title) {
-      const index = title.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % FALLBACK_ICONS.length;
-      return FALLBACK_ICONS[index];
-    }
-
-    return "help-circle-outline"; // final fallback
+    // Use item.icon if available, otherwise calculate from title
+    if (item.icon) return item.icon;
+    return getIconForTitle(item.title);
   };
 
-  const renderItem = ({ item }: { item: any }) => (
+  const getItemColor = (item: any, index: number) => {
+    if (item.color) return item.color;
+    return getColorForIndex(index);
+  };
+
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
     <Tooltip
-      // isVisible={tooltipId === item.id}
-      isVisible={tooltipId === item._id}
+      isVisible={tooltipId === (item._id || item.id)}
       content={<Text style={{ color: "#000000ff" }}>{`Learn more about ${item.title}`}</Text>}
       placement="top"
       onClose={() => setTooltipId(null)}
@@ -3168,12 +3800,11 @@ finally {
       <TouchableOpacity
         style={styles.cardWrapper}
         onPress={() => handlePress(item)}
-        // onLongPress={() => setTooltipId(item.id)}
-        onLongPress={() => setTooltipId(item._id)}
+        onLongPress={() => setTooltipId(item._id || item.id)}
         delayLongPress={300}
         activeOpacity={0.8}
       >
-        <View style={[styles.card, { backgroundColor: item.color || Colors.primary }]}>
+        <View style={[styles.card, { backgroundColor: getItemColor(item, index) }]}>
           <Icon name={getIconName(item)} size={42} color="white" />
           {item.hasUpdate && (
             <View style={styles.updateBadge}>
@@ -3186,92 +3817,102 @@ finally {
     </Tooltip>
   );
 
-  const renderSkeletonj = () => {
-    const totalItems = 8;
-    const skeletonRows = [];
-
-    skeletonRows.push(
-      <SkeletonPlaceholder key="header">
-        <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
-      </SkeletonPlaceholder>
-    );
-
-    for (let i = 0; i < totalItems; i += NUM_COLUMNS) {
-      skeletonRows.push(
-        <View key={i} style={styles.row}>
-          {Array.from({ length: NUM_COLUMNS }).map((_, index) => (
-            <View key={index} style={styles.cardWrapper}>
-              <SkeletonPlaceholder>
-                <View style={styles.card} />
-                <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
-              </SkeletonPlaceholder>
-            </View>
-          ))}
-        </View>
-      );
-    }
-
-    return skeletonRows;
-  };
   const renderSkeleton = () => {
-  const totalItems = 8;
+    const totalItems = 8;
 
-  return (
-    <>
-      <SkeletonPlaceholder key="skeleton-header">
-        <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
-      </SkeletonPlaceholder>
+    return (
+      <>
+        <SkeletonPlaceholder>
+          <View style={{ width: 160, height: 20, marginBottom: 12, borderRadius: 4 }} />
+        </SkeletonPlaceholder>
 
-      {Array.from({ length: totalItems / NUM_COLUMNS }).map((_, rowIndex) => (
-        <View key={`skeleton-row-${rowIndex}`} style={styles.row}>
-          {Array.from({ length: NUM_COLUMNS }).map((__, colIndex) => (
-            <View key={`skeleton-cell-${rowIndex}-${colIndex}`} style={styles.cardWrapper}>
-              <SkeletonPlaceholder>
-                <View style={styles.card} />
-                <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
-              </SkeletonPlaceholder>
-            </View>
-          ))}
-        </View>
-      ))}
-    </>
-  );
-};
+        {Array.from({ length: totalItems / NUM_COLUMNS }).map((_, rowIndex) => (
+          <View key={`skeleton-row-${rowIndex}`} style={styles.row}>
+            {Array.from({ length: NUM_COLUMNS }).map((__, colIndex) => (
+              <View key={`skeleton-cell-${rowIndex}-${colIndex}`} style={styles.cardWrapper}>
+                <SkeletonPlaceholder>
+                  <View style={styles.card} />
+                  <View style={{ width: 50, height: 10, borderRadius: 4, marginTop: 6 }} />
+                </SkeletonPlaceholder>
+              </View>
+            ))}
+          </View>
+        ))}
+      </>
+    );
+  };
 
+  if (loading) {
+    return <View style={styles.container}>{renderSkeleton()}</View>;
+  }
+
+  const displayData = data.length > 0 ? data : DEFAULT_CATEGORIES;
 
   return (
     <View style={styles.container}>
-      {loading ? renderSkeleton() : (
-        <>
- {Array.isArray(data) && data.length > 0 && (
-  <Text style={styles.headerTitle}>Daily Wellness</Text>
-)}
-
-          <FlatList
-            data={Array.isArray(data) ? data : []}
-            // keyExtractor={i => i._id}
-            keyExtractor={(item, index) => item._id ?? String(index)}
-
-              // keyExtractor={item => item.id}
-            renderItem={renderItem}
-            numColumns={NUM_COLUMNS}
-            scrollEnabled={false}
-            columnWrapperStyle={styles.row}
-            extraData={tooltipId}
-          />
-        </>
+      {displayData.length > 0 && (
+        <Text style={styles.headerTitle}>Daily Wellness</Text>
       )}
+      
+      {error && !loading && (
+        <View style={styles.errorContainer}>
+          <Icon name="alert-circle-outline" size={14} color={Colors.warning || '#F59E0B'} />
+          <Text style={styles.errorText}>Using default categories</Text>
+        </View>
+      )}
+      
+      <FlatList
+        data={displayData}
+        keyExtractor={(item, index) => item._id || item.id || String(index)}
+        renderItem={renderItem}
+        numColumns={NUM_COLUMNS}
+        scrollEnabled={false}
+        columnWrapperStyle={styles.row}
+        extraData={tooltipId}
+        ListEmptyComponent={
+          !loading && (
+            <View style={styles.emptyContainer}>
+              <Icon name="alert-circle-outline" size={32} color={Colors.gray} />
+              <Text style={styles.emptyText}>No categories available</Text>
+            </View>
+          )
+        }
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { padding: 12, backgroundColor: '#fff' },
-  headerTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
+  headerTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   cardWrapper: { flex: 1 / NUM_COLUMNS, marginHorizontal: 4, alignItems: 'center' },
-  card: { width: 70, height: 70, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
-  cardText: { fontSize: 12, fontWeight: '600', color: Colors.grayPRI, textAlign: 'center' },
+  card: { width: 70, height: 70, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
+  cardText: { fontSize: 12, fontWeight: '600', color: Colors.grayPRI || '#666', textAlign: 'center' },
   updateBadge: { position: 'absolute', top: -4, right: -4, backgroundColor: '#FF3B30', borderRadius: 8, paddingHorizontal: 5, paddingVertical: 2 },
   updateText: { color: 'white', fontSize: 10, fontWeight: 'bold' },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    marginBottom: 10,
+    backgroundColor: '#fff3e0',
+    borderRadius: 8,
+    gap: 6,
+  },
+  errorText: {
+    fontSize: 11,
+    color: Colors.warning || '#F59E0B',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 30,
+    gap: 10,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: Colors.gray || '#999',
+  },
 });
